@@ -73,9 +73,10 @@ public class IUserSvc implements UserCt {
 
     @Override
     public List<CryptoProviderAddress> getUnfufilledExpectation(Currency currency) {
+        User u = this.getCurrentUser();
         List<CryptoProviderAddress> c = providerAddressDao.findByStatus("UNFULFILLED");
         System.out.println(c.size());
-        return c.stream().filter( (cpa) -> cpa.getCurrency().equals(currency) ).collect(Collectors.toList());
+        return c.stream().filter( (cpa) -> cpa.getCurrency().equals(currency) && cpa.getUser().equals(u)).collect(Collectors.toList());
     }
 
     public User getCurrentUser() {
