@@ -78,7 +78,7 @@ public class MineCoin implements MiningCt {
                 mineHistory.setContract(c);
                 mineHistoryDao.save(mineHistory);
 
-                if( Period.between( LocalDate.now(), c.getCreatedAt().toLocalDate() ).getDays() > c.getLifeSpan() ){
+                if( Math.abs(Duration.between(LocalDateTime.now(), c.getCreatedAt()).toDays()) > c.getLifeSpan() ){
                     c.setStatus(ContractStatus.SUSPENDED);
                 }
                 savedUpdate.add(c);
