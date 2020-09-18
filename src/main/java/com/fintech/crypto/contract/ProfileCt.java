@@ -7,4 +7,5 @@ public interface ProfileCt {
     UserDto modifyNonBinaryOfProfile(BasicProfileModificationReq request);
     UserDto showFullProfile(String email);
     UserDto showAnyProfile(String email);
+    String enable2FA();
 }
