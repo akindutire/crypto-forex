@@ -7,13 +7,14 @@ import com.fintech.crypto.dao.ContractDao;
 import com.fintech.crypto.dao.MineHistoryDao;
 import com.fintech.crypto.entity.*;
 import com.fintech.crypto.enums.ContractStatus;
+import org.joda.time.Hours;
+import org.joda.time.ReadableInstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.Period;
+import java.time.*;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -49,7 +50,8 @@ public class MineCoin implements MiningCt {
                 //Check when last mined
                if (latest != null){
                    System.out.println(latest.getCreatedAt() +" logged");
-                   if( Math.abs(Period.between( LocalDate.now(), latest.getCreatedAt().toLocalDate() ).getDays()) < 1 ){
+//                   System.out.println(Math.abs(Duration.between(LocalDateTime.now(), latest.getCreatedAt()).toDays()) + "hours");
+                   if( Math.abs(Duration.between(LocalDateTime.now(), latest.getCreatedAt()).toHours()) < 24 ){
                       continue;
                    }
                }

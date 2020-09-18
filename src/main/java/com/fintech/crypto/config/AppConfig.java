@@ -88,7 +88,7 @@ public class AppConfig implements WebMvcConfigurer {
         mineCoin.mine();
     }
 
-    //Every 5 mins for test cases
+//    Every 5 mins for test cases
 //    @Scheduled(fixedDelay = 60000)
 //    public void scheduleMining2() {
 //        mineCoin.mine();

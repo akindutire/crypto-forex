@@ -20,7 +20,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +34,9 @@ public class ProfileSvc implements ProfileCt {
 
     @Autowired
     IUserSvc userSvc;
+
+    @Autowired
+    TotpSvc totpSvc;
 
     @Autowired
     ModelMapper modelMapper;
@@ -98,7 +103,7 @@ public class ProfileSvc implements ProfileCt {
 
             double amountMined = 0;
             if (cs != 0){
-                int days = Math.abs(Period.between(LocalDate.now(), ct.get(0).getCreatedAt().toLocalDate()).getDays());
+                long days = Math.abs(Duration.between(LocalDateTime.now(), ct.get(0).getCreatedAt()).toDays());
                 amountMined = ct.stream().mapToDouble(Contract::getInterestAmountAccumulated).sum() / days;
             }
             coinMinedPerDay.put(c.toString(), amountMined);
@@ -150,9 +155,6 @@ public class ProfileSvc implements ProfileCt {
         User user = userDao.findByEmail(searchKey).orElseThrow(
                 () -> new UsernameNotFoundException(String.format("Sorry, we could not get a match for %s in our data store", searchKey))
         );
-
-        List<Contract> contractList = user.getContract();
-        double amtCoined = contractList.stream().mapToDouble(Contract::getInterestAmountAccumulated).sum();
         UserDto res = new UserDto();
         BeanUtils.copyProperties(user, res);
 
@@ -170,7 +172,8 @@ public class ProfileSvc implements ProfileCt {
 
             double amountMined = 0;
             if (cs != 0){
-                int days = Period.between(LocalDate.now(), ct.get(0).getCreatedAt().toLocalDate()).getDays();
+
+                long days = Math.abs(Duration.between(LocalDateTime.now(), ct.get(0).getCreatedAt()).toDays());
                 amountMined = ct.stream().mapToDouble(Contract::getInterestAmountAccumulated).sum() / Math.abs(days);
             }
             coinMinedPerDay.put(c.toString(), amountMined);
@@ -185,7 +188,6 @@ public class ProfileSvc implements ProfileCt {
             if (sp != 0){
                 lpv = pt.get(sp-1).getAmount();
             }
-
 
             List<Transaction> wt = transactionDao.findByCurrency(c, f.getRef(), TransactionType.WITHDRAWAL);
             int sw = wt.size();
@@ -215,6 +217,16 @@ public class ProfileSvc implements ProfileCt {
         res.setWithdrawalAddress(address);
 
         return res;
+    }
+
+    @Override
+    public String enable2FA() {
+        User user = userSvc.getCurrentUser();
+
+        user.setIsUsing2FA(true);
+        user.setSecretFor2FA(totpSvc.generateSecret());
+        userDao.save(user);
+        return user.getSecretFor2FA();
     }
 
 }

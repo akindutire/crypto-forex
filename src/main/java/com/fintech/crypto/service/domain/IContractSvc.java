@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -38,6 +39,9 @@ public class IContractSvc implements ContractCt {
 
     @Autowired
     ContractHistoryDao contractHistoryDao;
+
+    @Autowired
+    MineHistoryDao mineHistoryDao;
 
     @Autowired
     CoinDao coinDao;
@@ -109,8 +113,15 @@ public class IContractSvc implements ContractCt {
         history.setContract(contract);
         history.setNote("Initialization:New contract created with opening amount of "+providerAddress.getExpectedAmount()+""+currency.toString()+" investment");
 
+        //Set up mining
+        MineHistory mh = new MineHistory();
+        mh.setContract(contract);
+        mh.setAmountMined(0.00);
+        mineHistoryDao.save(mh);
+
         contractHistoryDao.save(history);
         contractDao.save(contract);
+
         transactionDao.save(tnx);
 
         return contract;
@@ -129,7 +140,7 @@ public class IContractSvc implements ContractCt {
             throw new UnsupportedOperationException("Only suspended contract can be released");
         }
 
-        if( Math.abs(Period.between( LocalDate.now(), c.getCreatedAt().toLocalDate() ).getDays()) > c.getLifeSpan()  ) {
+        if( Math.abs(Duration.between(LocalDateTime.now(), c.getCreatedAt()).toDays()) > c.getLifeSpan()  ) {
             Coin coin = coinDao.findByRef(c.getCoin()).orElseThrow( () -> new IllegalStateException("Coin associated to this contract is not found"));
 
             ContractHistory history = new ContractHistory();
@@ -164,7 +175,7 @@ public class IContractSvc implements ContractCt {
             throw new IllegalStateException("Only suspended contract can be renewed");
         }
 
-        if( Math.abs(Period.between( LocalDate.now(), c.getCreatedAt().toLocalDate() ).getDays()) > c.getLifeSpan()  ) {
+        if( Math.abs(Duration.between(LocalDateTime.now(), c.getCreatedAt()).toDays()) > c.getLifeSpan()  ) {
             Coin coin = coinDao.findByRef(c.getCoin()).orElseThrow( () -> new IllegalStateException("Coin associated to this contract is not found"));
 
             ContractHistory history = new ContractHistory();
@@ -202,7 +213,7 @@ public class IContractSvc implements ContractCt {
         Transaction latest = transactionDao.findByContract(contract, TransactionType.CONTRACT_FUND_TRANSFER).stream().max( Comparator.comparing(AbstractEntity::getCreatedAt) ).orElse(null);
         //Check when last mined
         if (latest != null){
-            if( Math.abs(Period.between( LocalDate.now(), latest.getCreatedAt().toLocalDate() ).getDays()) < 1 ){
+            if( Math.abs(Duration.between(LocalDateTime.now(), latest.getCreatedAt()).toDays() ) < 1 ){
                 throw new UnsupportedOperationException("You have to wait for a day interval for contract fund withdrawal");
             }
         }
