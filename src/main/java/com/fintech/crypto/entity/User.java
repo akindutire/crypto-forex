@@ -35,4 +35,10 @@ public class User extends AbstractEntity{
     @Column(name = "is_enabled")
     private Boolean enabled;
 
+    @Column(name = "is_using_2FA")
+    private Boolean isUsing2FA;
+
+    @Column(name = "secret_for_2fa")
+    private String secretFor2FA;
+
 }
