@@ -43,9 +43,15 @@ public class AppProp {
     public String MAILGUN_API_KEY;
     @Value("${mailgun.mail.address}")
     public String FROM_MAIL_ADDRESS;
+    @Value("${mailgun.mail.address.support}")
+    public String SUPPORT_MAIL_ADDRESS;
+
 
     @Value("${block.io.base.address}")
     public String BLOCKIO_BASE_URL;
+
+    @Value("${block.cypher.base.address}")
+    public String BLOCKCYPHER_BASE_URL;
 
     @Value("${crypt.api.key.bitcoin}")
     public String CRYPT_API_KEY_BTC;

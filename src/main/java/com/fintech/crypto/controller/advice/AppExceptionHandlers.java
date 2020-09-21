@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ValidationException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,6 +91,19 @@ public class AppExceptionHandlers {
         error.put("message", e.getMessage());
         error.put("status", HttpStatus.NON_AUTHORITATIVE_INFORMATION.value());
         error.put("mode", "USER_CREDENTIALS");
+        error.put("exception", e.getClass().getName());
+
+        LOGGER.info(Arrays.toString(e.getStackTrace()));
+
+        return new ResponseEntity<>(error, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+    }
+
+    @ExceptionHandler(value = { ValidationException.class, MethodArgumentNotValidException.class} )
+    public ResponseEntity<Map<String, Object>> handelValidationException(Exception e){
+        Map<String, Object> error = new HashMap();
+        error.put("message", e.getMessage());
+        error.put("status", HttpStatus.NON_AUTHORITATIVE_INFORMATION.value());
+        error.put("mode", "VALIDATION ISSUE");
         error.put("exception", e.getClass().getName());
 
         LOGGER.info(Arrays.toString(e.getStackTrace()));

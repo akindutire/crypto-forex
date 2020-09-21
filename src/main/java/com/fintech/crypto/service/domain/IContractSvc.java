@@ -6,6 +6,7 @@ import com.fintech.crypto.dto.ContractWithHistoryDto;
 import com.fintech.crypto.entity.*;
 import com.fintech.crypto.enums.*;
 import com.fintech.crypto.security.KeyGen;
+import com.fintech.crypto.service.utility.NotificationSvc;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class IContractSvc implements ContractCt {
 
     @Autowired
     IWalletSvc walletSvc;
+
+    @Autowired
+    NotificationSvc notificationSvc;
 
     @Autowired
     ModelMapper modelMapper;
@@ -121,8 +125,14 @@ public class IContractSvc implements ContractCt {
 
         contractHistoryDao.save(history);
         contractDao.save(contract);
-
         transactionDao.save(tnx);
+
+        //Execute referral commission
+
+        //Execute mail
+
+        notificationSvc.newContractNotice(contract, currency);
+        notificationSvc.transactionCommitNotifications(tnx);
 
         return contract;
     }
@@ -159,6 +169,7 @@ public class IContractSvc implements ContractCt {
             c.setAmountInvested(0.00);
             contractDao.save(c);
 
+            notificationSvc.contractTerminationNotice(history, c.getUser().getEmail());
             return c;
 
         }else{
@@ -192,7 +203,8 @@ public class IContractSvc implements ContractCt {
             c.setStatus(ContractStatus.ACTIVE);
             c.setInterestAmountAccumulated(0.00);
             contractDao.save(c);
-
+            User u = c.getUser();
+            notificationSvc.contractRenewalNotice(history, u.getEmail(), u.getName());
             return c;
 
         }else{
@@ -255,6 +267,7 @@ public class IContractSvc implements ContractCt {
         fold.setBalance(fold.getBalance() +  amount);
         foldDao.save(fold);
 
+        notificationSvc.transactionCommitNotifications(tnx);
         return tnx;
     }
 }

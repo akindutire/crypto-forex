@@ -351,7 +351,8 @@ public class Template {
                 "            \t\t\t<div class=\"text\" style=\"padding: 0 2.5em; text-align: center;\">\n" +
                 "            \t\t\t\t<h2>${heading1}</h2>\n" +
                 "            \t\t\t\t<h3>${heading2}</h3>\n" +
-                "                            <div>${body}</div>\n" +
+                "                            <div>${body}</div><br />\n" +
+                "                             <div>Thank you, <br/>Crypto Forex Support</div>"+
                 "            \t\t\t</div>\n" +
                 "            \t\t</td>\n" +
                 "            \t</tr>\n" +
@@ -369,8 +370,8 @@ public class Template {
                 "                  <table role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" width=\"100%\">\n" +
                 "                    <tr>\n" +
                 "                      <td style=\"text-align: left; padding-left: 5px; padding-right: 5px;\">\n" +
-                "                      \t<h3 class=\"heading\">Contact Info</h3>\n" +
-                "                      \t<ul>\n" +
+                "                      \t<h3 class=\"heading\"></h3>\n" +
+                "                      \t<ul style='list-style:none;'>\n" +
                 "\t\t\t\t\t                <li><span class=\"text\">${companyAddress}</span></li>\n" +
                 "\t\t\t\t\t                <li><span class=\"text\">${companyPhone}</span></a></li>\n" +
                 "\t\t\t\t\t              </ul>\n" +
@@ -384,9 +385,6 @@ public class Template {
                 "          </td>\n" +
                 "        </tr><!-- end: tr -->\n" +
                 "<!--        <tr>-->\n" +
-                "<!--          <td class=\"bg_light\" style=\"text-align: center;\">-->\n" +
-                "<!--          \t<p>No longer want to receive these email? You can <a href=\"#\" style=\"color: rgba(0,0,0,.8);\">Unsubscribe here</a></p>-->\n" +
-                "<!--          </td>-->\n" +
                 "<!--        </tr>-->\n" +
                 "\n" +
                 "      </table>\n" +

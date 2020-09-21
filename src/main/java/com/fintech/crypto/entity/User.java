@@ -2,6 +2,7 @@ package com.fintech.crypto.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fintech.crypto.security.AppUserRole;
+import com.fintech.crypto.security.KeyGen;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,9 +37,15 @@ public class User extends AbstractEntity{
     private Boolean enabled;
 
     @Column(name = "is_using_2FA")
-    private Boolean isUsing2FA;
+    private Boolean isUsing2FA = false;
 
     @Column(name = "secret_for_2fa")
     private String secretFor2FA;
+
+    @Column(name = "referral_key")
+    private String referralKey = KeyGen.generateLong(this.name+"&"+this.email);
+
+    @Column(name = "referred_by")
+    private String referredByUserEmail;
 
 }

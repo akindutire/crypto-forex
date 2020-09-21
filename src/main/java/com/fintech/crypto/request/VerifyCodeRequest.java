@@ -8,13 +8,12 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class LoginReq {
+public class VerifyCodeRequest {
 
     @NotBlank
-    @Email( message = "{Invalid email entered }")
+    @Email
     private String email;
 
     @NotBlank
-    private String password;
-
+    private String code;
 }

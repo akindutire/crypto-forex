@@ -15,4 +15,8 @@ public interface UserDao extends JpaRepository<User, Long> {
 
     @Query("select u.role from User u where u.email=:E")
     String findByEmailQ(@Param("E") String email);
+
+    @Query("select u from User u where u.referralKey=:R")
+    Optional<User> findEmailByReferralKey(@Param("R") String refKey);
+
 }

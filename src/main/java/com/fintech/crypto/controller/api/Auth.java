@@ -1,8 +1,10 @@
 package com.fintech.crypto.controller.api;
 
+import com.fintech.crypto.entity.User;
 import com.fintech.crypto.prop.AppProp;
 import com.fintech.crypto.request.LoginReq;
 import com.fintech.crypto.request.TokenValidationReq;
+import com.fintech.crypto.request.VerifyCodeRequest;
 import com.fintech.crypto.security.JwtProvider;
 import com.fintech.crypto.service.domain.IUserSvc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +39,6 @@ public class Auth {
     @Autowired
     IUserSvc userSvc;
 
-
     //email based
     @PostMapping("signin")
     public ResponseEntity<Map<String, Object>> signIn(@Valid @RequestBody LoginReq request){
@@ -52,22 +53,60 @@ public class Auth {
                     )
             );
 
+            res.put("status", HttpStatus.OK.value());
+            res.put("code", HttpStatus.OK);
+            res.put("message", "User is valid");
+            res.put("data", null);
+            res.put("canProceedToMFA", true);
+            res.put("authority", userSvc.getUserRole(request.getEmail()));
+
+            User u = userSvc.findUser(request.getEmail());
+
+            if (!u.getIsUsing2FA()){
+                res.put("canProceedToMFA", false);
+                //Fetch user details from database alongside with its authorities
+                final UserDetails userDetails = userSvc.loadUserByUsername(request.getEmail());
+                //Generate a token for the user details
+                String token = jwtProvider.createToken(userDetails);
+                res.put("message", "Token is valid for "+Integer.parseInt(prop.EXPIRATION_SECONDS)/3600+"hr(s)");
+                res.put("token", token);
+            }
+
+
         } catch (BadCredentialsException e){
             throw new UsernameNotFoundException("Invalid credentials. " + e.getMessage());
         }
 
-        //Fetch user details from database alongside with its authorities
-        final UserDetails userDetails = userSvc.loadUserByUsername(request.getEmail());
-
-        //Generate a token for the user details
-        String token = jwtProvider.createToken(userDetails);
-        res.put("status", HttpStatus.OK.value());
-        res.put("code", HttpStatus.OK);
-        res.put("message", "Token is valid for "+Integer.parseInt(prop.EXPIRATION_SECONDS)/3600+"hr(s)");
-        res.put("token", token);
-        res.put("authority", userSvc.getUserRole(request.getEmail()));
-
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/verify/mfa")
+    public ResponseEntity<?> verifyCode(@Valid @RequestBody VerifyCodeRequest verifyCodeRequest) {
+        Map<String, Object> res = new HashMap<>();
+        try{
+
+           boolean verified = userSvc.verify2FACode(verifyCodeRequest.getEmail(), verifyCodeRequest.getCode());
+           if (!verified){
+               throw new BadCredentialsException("Wrong 2FA code used");
+           }
+
+           //Fetch user details from database alongside with its authorities
+           final UserDetails userDetails = userSvc.loadUserByUsername(verifyCodeRequest.getEmail());
+
+           //Generate a token for the user details
+           String token = jwtProvider.createToken(userDetails);
+           res.put("status", HttpStatus.OK.value());
+           res.put("code", HttpStatus.OK);
+           res.put("message", "Token is valid for "+Integer.parseInt(prop.EXPIRATION_SECONDS)/3600+"hr(s)");
+           res.put("token", token);
+           res.put("authority", userSvc.getUserRole(verifyCodeRequest.getEmail()));
+
+           return new ResponseEntity<>(res, HttpStatus.OK);
+
+       }catch(BadCredentialsException e){
+           throw new UsernameNotFoundException("Invalid 2FA code. " + e.getMessage());
+       }
+
     }
 
     @PostMapping(value = "validate/token")

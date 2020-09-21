@@ -4,6 +4,7 @@ import com.fintech.crypto.dao.ContractDao;
 import com.fintech.crypto.dao.TransactionDao;
 import com.fintech.crypto.entity.Transaction;
 import com.fintech.crypto.enums.*;
+import com.fintech.crypto.service.utility.NotificationSvc;
 import org.modelmapper.ModelMapper;
 import com.fintech.crypto.contract.WalletCt;
 import com.fintech.crypto.dao.FoldDao;
@@ -43,6 +44,9 @@ public class IWalletSvc implements WalletCt {
 
     @Autowired
     ITnxSvc tnxSvc;
+
+    @Autowired
+    NotificationSvc notificationSvc;
 
     @Autowired
     ModelMapper modelMapper;
@@ -124,7 +128,7 @@ public class IWalletSvc implements WalletCt {
         //Append tnx
         tnx.setContract(null);
         transactionDao.save(tnx);
-
+        notificationSvc.transactionCommitNotifications(tnx);
         return tnx;
     }
 
@@ -144,13 +148,17 @@ public class IWalletSvc implements WalletCt {
     public double getWithdrawalLimit(Currency currency){
         double limit;
         if (currency.equals(Currency.BTC)){
-            limit = 0.001;
+            limit = 0.00046;
         }else if (currency.equals(Currency.ETH)){
-            limit = 0.02;
+            limit = 0.014;
         }else if (currency.equals(Currency.LTC)){
-            limit = 0.2;
+            limit = 0.10;
         }else if (currency.equals(Currency.DGD)){
-            limit = 5000;
+            limit = 1808;
+        }else if(currency.equals(Currency.ZCH)){
+            limit = 0.09;
+        }else if(currency.equals(Currency.DSH)){
+            limit = 755;
         }else{
             limit = -1;
         }
@@ -181,6 +189,11 @@ public class IWalletSvc implements WalletCt {
 
         t.setStatus(TransactionStatus.CONFIRMED);
         transactionDao.save(t);
+
+        Wallet w = walletDao.findByKey(f.getWallet());
+
+        notificationSvc.withdrawalNotice(t, w.getUser().getName(), w.getUser().getEmail());
+
         return t;
     }
 }

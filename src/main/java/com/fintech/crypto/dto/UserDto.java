@@ -13,6 +13,10 @@ import java.util.Map;
 public class UserDto {
     private String name;
     private String email;
+    private Boolean isUsing2FA;
+    private String secretFor2FA;
+    private String referralKey;
+    private String referredByUserEmail;
     private AppUserRole role;
     private LocalDateTime createdAt;
     private Map<String, Double> coinMined;
@@ -21,6 +25,8 @@ public class UserDto {
     private Map<String, Map<String, Double>> lastPurchaseAndWithdrawal;
 
     private String withdrawalAddress;
+    private String secretFor2FAUri;
+
 //    private Wallet wallet;
 
 }

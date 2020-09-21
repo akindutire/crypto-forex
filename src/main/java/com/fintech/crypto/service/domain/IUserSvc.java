@@ -10,6 +10,8 @@ import com.fintech.crypto.entity.Wallet;
 import com.fintech.crypto.enums.Currency;
 import com.fintech.crypto.request.UserRegistrationReq;
 import com.fintech.crypto.security.AppUser;
+import com.fintech.crypto.service.utility.NotificationSvc;
+import com.fintech.crypto.service.utility.TotpSvc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +30,12 @@ public class IUserSvc implements UserCt {
     IWalletSvc walletSvc;
 
     @Autowired
+    TotpSvc totpSvc;
+
+    @Autowired
+    NotificationSvc notificationSvc;
+
+    @Autowired
     UserDao userDao;
 
     @Autowired
@@ -42,9 +50,20 @@ public class IUserSvc implements UserCt {
         if (userDao.findByEmail(req.getEmail()).isPresent()){
             throw new DuplicateKeyException("Account already existed");
         }else{
+            User u = new User();
+            String rKey = req.getReferralUserKey();
+
+            User refUser = null;
+            if (!rKey.equals("00") || rKey.length() > 8 ){
+                refUser = userDao.findEmailByReferralKey(rKey).orElse(null);
+                if (refUser != null){
+                    u.setReferredByUserEmail(refUser.getEmail());
+                }else{
+                    throw new IllegalStateException("Unknown referral");
+                }
+            }
 
             Wallet w = walletSvc.create();
-            User u = new User();
             u.setName(req.getName());
             u.setEmail(req.getEmail());
             u.setEnabled(true);
@@ -54,8 +73,10 @@ public class IUserSvc implements UserCt {
 
             String encodedPwd = this.encodePassword(req.getPassword());
             u.setPassword(encodedPwd);
+            u = userDao.save(u);
 
-            return userDao.save(u);
+            notificationSvc.endOfOnBoardingNotice(u);
+            return u;
         }
     }
 
@@ -93,11 +114,7 @@ public class IUserSvc implements UserCt {
 
     public Optional<UserDetails> selectApplicationUserByUsername(String email) {
 
-        User user = userDao.findByEmail(email).orElseThrow(
-                () -> new UsernameNotFoundException(
-                        String.format("Sorry, we could not get a match for %s in data store", email)
-                )
-        );
+        User user = this.findUser(email);
 
         AppUser applicationUser = new AppUser(
                 user.getRole().getGrantedAuthority(),
@@ -109,6 +126,15 @@ public class IUserSvc implements UserCt {
                 user.getEnabled()
         );
         return Optional.of(applicationUser);
+    }
+
+    public User findUser(String email){
+        User user = userDao.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException(
+                        String.format("Sorry, we could not get a match for %s in data store", email)
+                )
+        );
+        return user;
     }
 
     @Override
@@ -124,4 +150,9 @@ public class IUserSvc implements UserCt {
         return bCryptPasswordEncoder.encode(password);
     }
 
+    public Boolean verify2FACode(String email, String code) {
+        User user = userDao.findByEmail(email).orElseThrow( () -> new UsernameNotFoundException("Unrecognized user"));
+
+        return totpSvc.verifyCode(code, user.getSecretFor2FA());
+    }
 }

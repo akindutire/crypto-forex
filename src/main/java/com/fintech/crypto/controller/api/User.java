@@ -5,9 +5,11 @@ import com.fintech.crypto.enums.Currency;
 import com.fintech.crypto.request.BasicProfileModificationReq;
 import com.fintech.crypto.request.FundWithdrawalApproveReq;
 import com.fintech.crypto.request.FundWithdrawalReq;
+import com.fintech.crypto.request.SendMailReq;
 import com.fintech.crypto.service.domain.ITnxSvc;
 import com.fintech.crypto.service.domain.IUserSvc;
 import com.fintech.crypto.service.domain.IWalletSvc;
+import com.fintech.crypto.service.utility.NotificationSvc;
 import com.fintech.crypto.service.utility.ProfileSvc;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ public class User {
     ProfileSvc profileSvc;
 
     @Autowired
+    NotificationSvc notificationSvc;
+
+    @Autowired
     IWalletSvc walletSvc;
 
     @Autowired
@@ -54,6 +59,30 @@ public class User {
             //original profile request
             res.put("data", profileSvc.showFullProfile(DataLounge.currentUserRecognizedByUniqueKey));
         }
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("enable/mfa")
+    public ResponseEntity<Map<String, Object>> enableMFA(){
+        Map<String, Object> res = new HashMap<>();
+
+        res.put("status", HttpStatus.OK.value());
+        res.put("code", HttpStatus.OK);
+        res.put("message", "2FA enabled");
+        res.put("data", profileSvc.enable2FA());
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("disable/mfa")
+    public ResponseEntity<Map<String, Object>> disableMFA(){
+        Map<String, Object> res = new HashMap<>();
+
+        res.put("status", HttpStatus.OK.value());
+        res.put("code", HttpStatus.OK);
+        res.put("message", "2FA disabled");
+        res.put("data", profileSvc.disable2FA());
 
         return new ResponseEntity<>(res, HttpStatus.OK);
     }

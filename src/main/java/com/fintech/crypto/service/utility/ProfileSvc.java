@@ -3,6 +3,7 @@ package com.fintech.crypto.service.utility;
 import com.fintech.crypto.context.DataLounge;
 import com.fintech.crypto.contract.*;
 import com.fintech.crypto.dao.ContractDao;
+import com.fintech.crypto.dao.MineHistoryDao;
 import com.fintech.crypto.dao.TransactionDao;
 import com.fintech.crypto.dao.UserDao;
 import com.fintech.crypto.dto.UserDto;
@@ -11,6 +12,8 @@ import com.fintech.crypto.enums.Currency;
 import com.fintech.crypto.enums.TransactionType;
 import com.fintech.crypto.prop.AppProp;
 import com.fintech.crypto.request.BasicProfileModificationReq;
+import com.fintech.crypto.request.MFASetup;
+import com.fintech.crypto.security.KeyGen;
 import com.fintech.crypto.service.domain.IUserSvc;
 import com.fintech.crypto.service.domain.IWalletSvc;
 import org.modelmapper.ModelMapper;
@@ -21,13 +24,10 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class ProfileSvc implements ProfileCt {
@@ -46,6 +46,9 @@ public class ProfileSvc implements ProfileCt {
 
     @Autowired
     ContractDao contractDao;
+
+    @Autowired
+    MineHistoryDao mineHistoryDao;
 
     @Autowired
     TransactionDao transactionDao;
@@ -84,12 +87,14 @@ public class ProfileSvc implements ProfileCt {
         User user = userDao.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException(String.format("Sorry, we could not get a match for %s in our data store", email))
         );
+        if(user.getReferralKey() == null || user.getReferralKey().length() == 0 ){
+            user.setReferralKey(KeyGen.generateLong(user.getName()+"&"+user.getEmail()));
+            if(user.getIsUsing2FA() == null){ user.setIsUsing2FA(false); }
+            userDao.save(user);
+        }
 
-        List<Contract> contractList = user.getContract();
         UserDto res = modelMapper.map(user, UserDto.class);
 
-
-        User u = userSvc.getCurrentUser();
         Map<String, Integer> m = new HashMap<>();
         Map<String, Double> coinMinedPerDay = new HashMap<>();
         Map<String, Double> coinMined = new HashMap<>();
@@ -97,14 +102,21 @@ public class ProfileSvc implements ProfileCt {
 
         Currency[] currencies = Currency.values();
         for (Currency c : currencies){
-            List<Contract> ct = contractDao.findContract(c, u);
+            List<Contract> ct = contractDao.findContract(c, user);
+
             int cs = ct.size();
             m.put(c.toString(), cs);
 
             double amountMined = 0;
             if (cs != 0){
+
                 long days = Math.abs(Duration.between(LocalDateTime.now(), ct.get(0).getCreatedAt()).toDays());
-                amountMined = ct.stream().mapToDouble(Contract::getInterestAmountAccumulated).sum() / days;
+                amountMined = ct.stream().mapToDouble(
+                        (cti) -> {
+                                List<MineHistory> mh = mineHistoryDao.findByContract(cti);
+                                return mh.stream().mapToDouble(MineHistory::getAmountMined).sum();
+                            }
+                ).sum() / days;
             }
             coinMinedPerDay.put(c.toString(), amountMined);
 
@@ -118,7 +130,6 @@ public class ProfileSvc implements ProfileCt {
             if (sp != 0){
                 lpv = pt.get(sp-1).getAmount();
             }
-
 
             List<Transaction> wt = transactionDao.findByCurrency(c, f.getRef(), TransactionType.WITHDRAWAL);
             int sw = wt.size();
@@ -138,6 +149,11 @@ public class ProfileSvc implements ProfileCt {
         res.setContractCount(m);
         res.setLastPurchaseAndWithdrawal(lastPurchasedAndWithdraw);
 
+        if(user.getSecretFor2FA() != null && user.getSecretFor2FA().length() > 0){
+            String uri = totpSvc.getUriForImage(user.getSecretFor2FA());
+            res.setSecretFor2FAUri(uri);
+        }
+
         String address = user.getWallet().getWithdrawalAddress();
         if (address != null){
             address = address.trim();
@@ -155,10 +171,14 @@ public class ProfileSvc implements ProfileCt {
         User user = userDao.findByEmail(searchKey).orElseThrow(
                 () -> new UsernameNotFoundException(String.format("Sorry, we could not get a match for %s in our data store", searchKey))
         );
-        UserDto res = new UserDto();
-        BeanUtils.copyProperties(user, res);
+        if(user.getReferralKey() == null || user.getReferralKey().length() < 8){
+            user.setReferralKey(KeyGen.generateLong(user.getName()+"&"+user.getEmail()));
+            if(user.getIsUsing2FA() == null){ user.setIsUsing2FA(false); }
+            userDao.save(user);
+        }
 
-        User u = userSvc.getCurrentUser();
+        UserDto res = modelMapper.map(user, UserDto.class);
+
         Map<String, Integer> m = new HashMap<>();
         Map<String, Double> coinMinedPerDay = new HashMap<>();
         Map<String, Double> coinMined = new HashMap<>();
@@ -166,7 +186,7 @@ public class ProfileSvc implements ProfileCt {
 
         Currency[] currencies = Currency.values();
         for (Currency c : currencies){
-            List<Contract> ct = contractDao.findContract(c, u);
+            List<Contract> ct = contractDao.findContract(c, user);
             int cs = ct.size();
             m.put(c.toString(), cs);
 
@@ -207,6 +227,11 @@ public class ProfileSvc implements ProfileCt {
         res.setContractCount(m);
         res.setLastPurchaseAndWithdrawal(lastPurchasedAndWithdraw);
 
+        if (user.getSecretFor2FA() != null && user.getSecretFor2FA().length() > 0) {
+            String uri = totpSvc.getUriForImage(user.getSecretFor2FA());
+            res.setSecretFor2FAUri(uri);
+        }
+
         String address = user.getWallet().getWithdrawalAddress();
         if (address != null){
             address = address.trim();
@@ -220,13 +245,30 @@ public class ProfileSvc implements ProfileCt {
     }
 
     @Override
-    public String enable2FA() {
+    public MFASetup enable2FA() {
         User user = userSvc.getCurrentUser();
 
         user.setIsUsing2FA(true);
         user.setSecretFor2FA(totpSvc.generateSecret());
         userDao.save(user);
-        return user.getSecretFor2FA();
+
+        String uri = totpSvc.getUriForImage(user.getSecretFor2FA());
+
+        MFASetup ms = new MFASetup();
+        ms.setSecret(user.getSecretFor2FA());
+        ms.setUri(uri);
+
+        return ms;
+    }
+
+    @Override
+    public Boolean disable2FA() {
+        User user = userSvc.getCurrentUser();
+
+        user.setIsUsing2FA(false);
+        user.setSecretFor2FA(null);
+        userDao.save(user);
+        return true;
     }
 
 }
