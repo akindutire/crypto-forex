@@ -61,10 +61,12 @@ public class Auth {
             res.put("authority", userSvc.getUserRole(request.getEmail()));
 
             User u = userSvc.findUser(request.getEmail());
+            System.out.println(request.getEmail());
 
-            if (!u.getIsUsing2FA()){
+            if (u.getIsUsing2FA() == null || u.getIsUsing2FA() != true){
                 res.put("canProceedToMFA", false);
                 //Fetch user details from database alongside with its authorities
+
                 final UserDetails userDetails = userSvc.loadUserByUsername(request.getEmail());
                 //Generate a token for the user details
                 String token = jwtProvider.createToken(userDetails);
