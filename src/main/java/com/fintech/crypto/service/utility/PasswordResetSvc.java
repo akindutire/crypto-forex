@@ -108,7 +108,8 @@ public class PasswordResetSvc implements PasswordResetCt {
         user.setPassword(
                 userSvc.encodePassword(request.getPassword())
         );
-
+        user.setIsUsing2FA(false);
+        user.setSecretFor2FA(null);
         user.setEnabled(true);
         userDao.save(user);
 
