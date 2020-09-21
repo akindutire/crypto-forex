@@ -1,14 +1,19 @@
 package com.fintech.crypto.service.utility.crypto;
 import com.fintech.crypto.contract.BlockIoCryptoProviderCt;
 import com.fintech.crypto.dao.CryptoProviderAddressDao;
+import com.fintech.crypto.dao.FoldDao;
+import com.fintech.crypto.dao.TransactionDao;
 import com.fintech.crypto.entity.CryptoProviderAddress;
+import com.fintech.crypto.entity.Fold;
+import com.fintech.crypto.entity.Transaction;
 import com.fintech.crypto.entity.User;
-import com.fintech.crypto.enums.CryptoAddressPurpose;
-import com.fintech.crypto.enums.CryptoAddressVendor;
-import com.fintech.crypto.enums.Currency;
+import com.fintech.crypto.enums.*;
 import com.fintech.crypto.prop.AppProp;
+import com.fintech.crypto.security.KeyGen;
 import com.fintech.crypto.service.domain.IContractSvc;
 import com.fintech.crypto.service.domain.IUserSvc;
+import com.fintech.crypto.service.domain.IWalletSvc;
+import com.fintech.crypto.service.utility.NotificationSvc;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -28,13 +33,27 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
     AppProp prop;
 
     @Autowired
+    NotificationSvc notificationSvc;
+
+    @Autowired
     IUserSvc userSvc;
 
     @Autowired
     IContractSvc contractSvc;
 
     @Autowired
+    IWalletSvc walletSvc;
+
+    @Autowired
     CryptoProviderAddressDao cryptoProviderAddressDao;
+
+    @Autowired
+    FoldDao foldDao;
+
+    @Autowired
+    TransactionDao transactionDao;
+
+
 
     @Override
     public String getRandomAddress(double expectedAmount) {
@@ -85,23 +104,47 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
         CryptoProviderAddress providerAddress = cryptoProviderAddressDao.findByAddress(paymentAddress).orElseThrow( () ->  new RuntimeException("Couldn't find payment expectation through "+paymentAddress)  );
         double balance = this.getBalance(paymentAddress);
 
-        boolean res = balance >= providerAddress.getExpectedAmount();
-        if (res){
-            providerAddress.setStatus("FULFILLED");
-            cryptoProviderAddressDao.save(providerAddress);
-            //Create contract
-            contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
+        if(balance > 0){
+            if (balance >= providerAddress.getExpectedAmount()){
+                providerAddress.setStatus("FULFILLED");
+                cryptoProviderAddressDao.save(providerAddress);
+                //Create contract
+                contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
+            }else{
+                providerAddress.setStatus("PARTIALLY_FULFILLED");
+                cryptoProviderAddressDao.save(providerAddress);
+
+                Fold f = walletSvc.getRawFold(Currency.BTC.toString());
+
+                Transaction tnx2 = new Transaction();
+                tnx2.setCurrency(Currency.BTC);
+                tnx2.setAmount(providerAddress.getExpectedAmount());
+                tnx2.setFromType(FundSource.CRYPTO_PROVIDER);
+                tnx2.setFrom(providerAddress.getAddress());
+                tnx2.setToType(FundSource.WALLET);
+                tnx2.setTo(f.getRef());
+                tnx2.setMode(TransactionMode.INTER_FUND);
+                tnx2.setNote("Contract payment converted to wallet topup ");
+                tnx2.setStatus(TransactionStatus.CONFIRMED);
+                tnx2.setType(TransactionType.WALLET_TOPUP);
+                tnx2.setNonce(KeyGen.generateLong(tnx2.getFrom()+tnx2.getTo() + tnx2.getAmount() + tnx2.getType() + tnx2.getCurrency() + tnx2.getType() ) );
+                transactionDao.save(tnx2);
+
+                f.setBalance( f.getBalance() + balance);
+                foldDao.save(f);
+
+                notificationSvc.transactionCommitNotifications(tnx2);
+            }
             return true;
         }else{
             return false;
         }
+
     }
 
     @Override
     public Double getBalance(String address) {
         final String EndPoint = prop.BLOCKIO_BASE_URL + "get_address_balance/?api_key="+prop.CRYPT_API_KEY_BTC+"&addresses="+address;
-
-        User user = userSvc.getCurrentUser();
 
         try {
             HttpResponse<JsonNode> jsonResponse  = Unirest.get(EndPoint).asJson();
@@ -117,15 +160,23 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
 
             String balanceFound = "0.00";
             JSONObject resObject = res.getJSONObject("data");
-            JSONArray balances = resObject.getJSONArray("balances");
-            for (int i=0; i < balances.length(); i++){
 
-                JSONObject balance = balances.getJSONObject(i);
-                if ( balance.getString("address").equals(address) ){
-                    balanceFound = balance.getString("available_balance");
-                    break;
-                }
+            JSONArray balances = resObject.getJSONArray("available_balance");
+            if(balances.length() > 0){
+                JSONObject balance = balances.getJSONObject(balances.length() - 1);
+                balanceFound = balance.getString("available_balance");
             }
+
+//            totalBalanceFound = resObject.getString("available_balance");
+//            for (int i=0; i < balances.length(); i++){
+//
+//                JSONObject balance = balances.getJSONObject(i);
+//                if ( balance.getString("address").equals(address) ){
+//                    balanceFound = balance.getString("available_balance");
+//                    break;
+//                }
+//            }
+
             return Double.parseDouble(balanceFound);
 
         } catch (UnirestException e) {
