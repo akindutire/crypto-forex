@@ -31,9 +31,6 @@ public class AppProp {
     @Value("${otp.length}")
     public String OTP_LENGTH;
 
-    @Value("${heroku.app.endpoint}")
-    public String HEROKU_ENDPOINT;
-
     @Value("${password.verification.threshold}")
     public String PASSWORD_VERIFICATION_THRESHOLD;
 
