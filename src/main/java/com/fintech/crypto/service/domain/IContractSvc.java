@@ -270,4 +270,28 @@ public class IContractSvc implements ContractCt {
         notificationSvc.transactionCommitNotifications(tnx);
         return tnx;
     }
+
+    public boolean validateMinimumInvestment(Double amount, Currency currency){
+
+        double limit;
+        if (currency.equals(Currency.BTC)){
+            limit = 0.00090;
+        }else if (currency.equals(Currency.ETH)){
+            limit = 0.026;
+        }else if (currency.equals(Currency.LTC)){
+            limit = 0.21;
+        }else if (currency.equals(Currency.DGD)){
+            limit = 3.670;
+        }else if(currency.equals(Currency.ZCH)){
+            limit = 0.17;
+        }else if(currency.equals(Currency.DSH)){
+            limit = 0.14;
+        }else{
+            limit = -1;
+        }
+
+        if(limit == -1){
+            return true;
+        }else return !(amount < limit);
+    }
 }

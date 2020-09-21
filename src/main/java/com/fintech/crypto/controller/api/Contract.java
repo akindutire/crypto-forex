@@ -52,6 +52,10 @@ public class Contract {
         }
 
 
+        if (!contractSvc.validateMinimumInvestment(request.getExpectedAmount(), request.getCurrency()) ){
+            throw new UnsupportedOperationException("Minimum deposit reached");
+        }
+
 
         res.put("status", HttpStatus.OK.value());
         res.put("code", HttpStatus.OK);
