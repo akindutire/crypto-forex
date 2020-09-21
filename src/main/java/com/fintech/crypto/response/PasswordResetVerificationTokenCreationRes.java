@@ -8,4 +8,5 @@ import org.springframework.stereotype.Component;
 @Getter @Setter
 public class PasswordResetVerificationTokenCreationRes {
     private String phone;
+    private String extra;
 }

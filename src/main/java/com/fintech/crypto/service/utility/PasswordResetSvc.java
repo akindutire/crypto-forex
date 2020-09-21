@@ -78,7 +78,8 @@ public class PasswordResetSvc implements PasswordResetCt {
         passwordResetSessionDao.save(resetTokenEntity);
 
         PasswordResetVerificationTokenCreationRes res = new PasswordResetVerificationTokenCreationRes();
-        res.setPhone(prop.APP_DOMAIN_ADDRESS);
+        res.setPhone(user.getEmail());
+        res.setExtra(prop.APP_DOMAIN_ADDRESS);
         return res;
     }
 
