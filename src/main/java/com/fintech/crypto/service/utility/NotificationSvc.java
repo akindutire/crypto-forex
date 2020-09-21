@@ -114,10 +114,6 @@ public class NotificationSvc {
         );
     }
 
-    public void startOfOnBoardingNoticeOTPBasedOnSms(String token, String phone){
-//        sms.send(String.format("Azapay OTP : %s ", token), prop.SYS_SMS_FROM_NUMBER, phone);
-    }
-
     public void transactionCommitNotifications(Transaction tnx) {
         //Send mails/SMS to Sender
         String name;
@@ -187,6 +183,7 @@ public class NotificationSvc {
                 prop.SUPPORT_MAIL_ADDRESS
         );
 
+        System.out.println(prop.APP_DOMAIN_ADDRESS);
         return true;
     }
 }

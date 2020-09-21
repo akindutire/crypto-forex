@@ -33,7 +33,7 @@ public class Password {
         Map<String, Object> res = new HashMap<>();
 
         PasswordResetVerificationTokenCreationRes data = passwordResetSvc.acquirePasswordResetVerificationToken(email);
-        res.put("message", "Reset token has been sent");
+        res.put("message", "Reset token has been sent to your mail");
         res.put("status", HttpStatus.OK.value());
         res.put("code", HttpStatus.OK);
         res.put("data", data);

@@ -145,6 +145,14 @@ public class IWalletSvc implements WalletCt {
         return f;
     }
 
+    //for someone
+    public Fold getRawFold(String coinCurrency, String walletKey) {
+
+        List<Fold> folds = foldDao.findByWK(walletKey);
+
+        return folds.stream().filter(fold -> fold.getCurrency().toString().equals(coinCurrency)).findFirst().orElse( new Fold() );
+    }
+
     public double getWithdrawalLimit(Currency currency){
         double limit;
         if (currency.equals(Currency.BTC)){

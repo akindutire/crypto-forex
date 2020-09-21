@@ -128,11 +128,31 @@ public class IContractSvc implements ContractCt {
         transactionDao.save(tnx);
 
         //Execute referral commission
-
+        String rm = u.getReferredByUserEmail();
+        User refu = userSvc.findUser(rm);
+        Fold refuF = walletSvc.getRawFold(currency.toString(), refu.getWallet().getKey());
+        //Setup transaction
+        double refamount = (5/100) * providerAddress.getExpectedAmount();
+        Transaction tnx2 = new Transaction();
+        tnx2.setCurrency(currency);
+        tnx2.setAmount(refamount);
+        tnx2.setFromType(FundSource.HOST_PROVIDER);
+        tnx2.setFrom("001-cryto-forex");
+        tnx2.setToType(FundSource.WALLET);
+        tnx2.setTo(refuF.getRef());
+        tnx2.setMode(TransactionMode.INTER_FUND);
+        tnx2.setNote("Referral commision on "+u.getName());
+        tnx2.setStatus(TransactionStatus.CONFIRMED);
+        tnx2.setType(TransactionType.REFERRAL_COMMISSION);
+        tnx2.setNonce(KeyGen.generateLong(tnx.getFrom()+tnx.getTo() + tnx.getAmount() + tnx.getType() + tnx.getCurrency() + tnx.getType() ) );
+        transactionDao.save(tnx2);
         //Execute mail
 
         notificationSvc.newContractNotice(contract, currency);
         notificationSvc.transactionCommitNotifications(tnx);
+
+
+        notificationSvc.transactionCommitNotifications(tnx2);
 
         return contract;
     }
