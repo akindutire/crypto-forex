@@ -51,6 +51,8 @@ public class Contract {
             address = "";
         }
 
+
+
         res.put("status", HttpStatus.OK.value());
         res.put("code", HttpStatus.OK);
         res.put("message", request.getExpectedAmount() + " hashpower is expected on " +address);
