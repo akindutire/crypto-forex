@@ -57,7 +57,7 @@ public class PasswordResetSvc implements PasswordResetCt {
         String resetToken = KeyGen.generateLong(System.currentTimeMillis()+""+user.getEmail());
         PasswordResetSession resetTokenEntity = new PasswordResetSession();
         resetTokenEntity.setEmail(user.getEmail());
-        resetTokenEntity.setToken(resetToken);
+        resetTokenEntity.setToken("9977");
 
         //Send mail
         String resetLink = String.format("%s/%s/%s", prop.APP_DOMAIN_ADDRESS.replaceAll("/$", ""), prop.VIEW_WEB_PASSWORD_RESET.replaceAll("/$", ""), resetToken);

@@ -46,7 +46,6 @@ public class AppProp {
     @Value("${mailgun.mail.address.support}")
     public String SUPPORT_MAIL_ADDRESS;
 
-
     @Value("${block.io.base.address}")
     public String BLOCKIO_BASE_URL;
 
