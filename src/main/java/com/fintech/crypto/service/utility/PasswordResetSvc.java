@@ -63,8 +63,18 @@ public class PasswordResetSvc implements PasswordResetCt {
         String resetLink = String.format("%s/%s/%s", prop.APP_DOMAIN_ADDRESS.replaceAll("/$", ""), prop.VIEW_WEB_PASSWORD_RESET.replaceAll("/$", ""), resetToken);
         String resetButton = String.format("<a style=\"padding: 16px 32px; width: 250px; margin: 32px 16px; color: #ffffff; background: #15c; border-radius: 5px;\" href=\"%s\">Reset password</a>", resetLink);
         String resetPwdForMailBody = String.format("<p>Needs to reset your password? Just click the button below.</p><p>If you didn't make this request, please ignore. Link is valid for %s mins</p> <br><p>%s </p><br><br><p>If you are having difficulty with the button above, copy and paste the link below to your browser url bar and execute</p><p>%s</p>", Long.parseLong(prop.PASSWORD_VERIFICATION_THRESHOLD)/60, resetButton, resetLink);
-        mailer.send("CryptoFx Password Reset","Reset your password","", resetPwdForMailBody, prop.FROM_MAIL_ADDRESS,user.getEmail());
 
+        mailer.send("CryptoFx Password Reset",
+                "Reset your password",
+                "",
+                resetPwdForMailBody,
+                prop.FROM_MAIL_ADDRESS,
+                user.getEmail()
+        );
+
+        System.out.println(prop.APP_DOMAIN_ADDRESS);
+        System.out.println(prop.FROM_MAIL_ADDRESS);
+        
         passwordResetSessionDao.save(resetTokenEntity);
 
         PasswordResetVerificationTokenCreationRes res = new PasswordResetVerificationTokenCreationRes();

@@ -182,9 +182,6 @@ public class NotificationSvc {
                 prop.FROM_MAIL_ADDRESS,
                 prop.SUPPORT_MAIL_ADDRESS
         );
-
-        System.out.println(prop.APP_DOMAIN_ADDRESS);
-        System.out.println(prop.FROM_MAIL_ADDRESS);
         return true;
     }
 }
