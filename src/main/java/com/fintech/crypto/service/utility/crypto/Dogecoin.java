@@ -81,7 +81,7 @@ public class Dogecoin implements BlockIoCryptoProviderCt {
             cryptoProviderAddress.setPurpose(CryptoAddressPurpose.PAYMENT_EXPECTATION);
             cryptoProviderAddress.setStatus("UNFULFILLED");
             cryptoProviderAddress.setExpectedAmount(expectedAmount);
-            cryptoProviderAddress.setCurrency(Currency.DGD);
+            cryptoProviderAddress.setCurrency(Currency.DOGE);
             cryptoProviderAddress.setVendor(CryptoAddressVendor.BLOCKIO);
             cryptoProviderAddressDao.save(cryptoProviderAddress);
 
@@ -104,7 +104,7 @@ public class Dogecoin implements BlockIoCryptoProviderCt {
         double balance = this.getBalance(paymentAddress);
 
         if(balance > 0){
-            Fold f = walletSvc.getRawFold(Currency.DGD.toString());
+            Fold f = walletSvc.getRawFold(Currency.DOGE.toString());
 
             if (balance >= providerAddress.getExpectedAmount()){
                 double excess = balance - providerAddress.getExpectedAmount();
@@ -126,7 +126,7 @@ public class Dogecoin implements BlockIoCryptoProviderCt {
                 cryptoProviderAddressDao.save(providerAddress);
 
                 Transaction tnx2 = new Transaction();
-                tnx2.setCurrency(Currency.DGD);
+                tnx2.setCurrency(Currency.DOGE);
                 tnx2.setAmount(balance);
                 tnx2.setFromType(FundSource.CRYPTO_PROVIDER);
                 tnx2.setFrom(providerAddress.getAddress());

@@ -2,7 +2,6 @@ package com.fintech.crypto.controller.api;
 
 import com.fintech.crypto.contract.BlockIoCryptoProviderCt;
 import com.fintech.crypto.contract.CryptoProvider;
-import com.fintech.crypto.dto.ContractWithHistoryDto;
 import com.fintech.crypto.enums.Currency;
 import com.fintech.crypto.factory.CryptoProviderFactory;
 import com.fintech.crypto.request.ContractCreactionReq;
@@ -10,10 +9,6 @@ import com.fintech.crypto.request.ContractPaymentAddressReq;
 import com.fintech.crypto.request.FundMovementToDashboard;
 import com.fintech.crypto.service.domain.IContractSvc;
 import com.fintech.crypto.service.domain.IUserSvc;
-import com.fintech.crypto.service.utility.crypto.Bitcoin;
-import com.fintech.crypto.service.utility.crypto.Dogecoin;
-import com.fintech.crypto.service.utility.crypto.Ethereum;
-import com.fintech.crypto.service.utility.crypto.Litecoin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +42,7 @@ public class Contract {
 
         Currency c = request.getCurrency();
         String address;
-        if(c.equals(Currency.BTC) || c.equals(Currency.LTC) || c.equals(Currency.DGD)) {
+        if(c.equals(Currency.BTC) || c.equals(Currency.LTC) || c.equals(Currency.DOGE)) {
             BlockIoCryptoProviderCt cryptoProvider = (BlockIoCryptoProviderCt) cryptoProviderFactory.getProvider(c);
             address = cryptoProvider.getRandomAddress(request.getExpectedAmount());
         }else{
@@ -71,7 +66,7 @@ public class Contract {
 
             Currency c = request.getCurrency();
             boolean paymentState;
-            if(c.equals(Currency.BTC) || c.equals(Currency.LTC) || c.equals(Currency.DGD)) {
+            if(c.equals(Currency.BTC) || c.equals(Currency.LTC) || c.equals(Currency.DOGE)) {
                 BlockIoCryptoProviderCt cryptoProvider = (BlockIoCryptoProviderCt) cryptoProviderFactory.getProvider(c);
                 paymentState = cryptoProvider.probePayment(request.getPaymentAddress());
             }else{

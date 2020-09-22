@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import com.fintech.crypto.contract.WalletCt;
 import com.fintech.crypto.dao.FoldDao;
 import com.fintech.crypto.dao.WalletDao;
-import com.fintech.crypto.dto.CoinDto;
 import com.fintech.crypto.dto.FoldDto;
 import com.fintech.crypto.entity.Fold;
 import com.fintech.crypto.entity.User;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import com.fintech.crypto.security.KeyGen;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class IWalletSvc implements WalletCt {
@@ -161,11 +159,11 @@ public class IWalletSvc implements WalletCt {
             limit = 0.014;
         }else if (currency.equals(Currency.LTC)){
             limit = 0.10;
-        }else if (currency.equals(Currency.DGD)){
+        }else if (currency.equals(Currency.DOGE)){
             limit = 1808;
-        }else if(currency.equals(Currency.ZCH)){
+        }else if(currency.equals(Currency.ZEC)){
             limit = 0.09;
-        }else if(currency.equals(Currency.DSH)){
+        }else if(currency.equals(Currency.DASH)){
             limit = 755;
         }else{
             limit = -1;

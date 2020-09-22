@@ -35,11 +35,11 @@ public class CryptoProviderFactory {
             return litecoin;
         }else if(currency.equals(Currency.ETH)){
             throw new IllegalStateException("Address not available");
-        }else if (currency.equals(Currency.DGD)){
+        }else if (currency.equals(Currency.DOGE)){
             return dogecoin;
-        }else if (currency.equals(Currency.ZCH)){
+        }else if (currency.equals(Currency.ZEC)){
             throw new IllegalStateException("Address not available");
-        }else if(currency.equals(Currency.DSH)){
+        }else if(currency.equals(Currency.DASH)){
             throw new IllegalStateException("Address not available");
         }else{
             throw new IllegalStateException("Currency not supported");

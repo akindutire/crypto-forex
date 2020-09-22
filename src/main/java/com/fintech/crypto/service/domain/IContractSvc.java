@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -304,11 +302,11 @@ public class IContractSvc implements ContractCt {
             limit = 0.026;
         }else if (currency.equals(Currency.LTC)){
             limit = 0.21;
-        }else if (currency.equals(Currency.DGD)){
+        }else if (currency.equals(Currency.DOGE)){
             limit = 3.670;
-        }else if(currency.equals(Currency.ZCH)){
+        }else if(currency.equals(Currency.ZEC)){
             limit = 0.17;
-        }else if(currency.equals(Currency.DSH)){
+        }else if(currency.equals(Currency.DASH)){
             limit = 0.14;
         }else{
             limit = -1;

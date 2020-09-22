@@ -3,10 +3,10 @@ package com.fintech.crypto.enums;
 public enum Currency {
     BTC,
     ETH,
-    DGD,
+    DOGE,
     LTC,
-    ZCH,
-    DSH,
+    ZEC,
+    DASH,
     NGN,
     USD,
 }

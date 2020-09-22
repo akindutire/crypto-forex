@@ -179,6 +179,7 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
                 balanceFound = balance.getString("available_balance");
                 c = cryptoProviderAddressDao.findByAddress(address).get();
                 c.setNonce(nonce);
+                c.setModifiedAt();
                 cryptoProviderAddressDao.save(c);
             }
 
