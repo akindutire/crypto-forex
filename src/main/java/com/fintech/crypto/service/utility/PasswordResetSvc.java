@@ -94,20 +94,17 @@ public class PasswordResetSvc implements PasswordResetCt {
             if( checkedToken.get().getCreatedAt().plusSeconds(Long.parseLong(prop.PASSWORD_VERIFICATION_THRESHOLD)).isBefore(LocalDateTime.now())  ) {
                 passwordResetSessionDao.delete(checkedToken.get());
                 passwordResetSessionDao.flush();
-                throw new RuntimeException(String.format("Reset link %s has expired, exceeds %d min", request.getResetToken(), Long.parseLong(prop.PASSWORD_VERIFICATION_THRESHOLD) / 60));
+                throw new RuntimeException(String.format("Reset link %s has expired, exceeded %d min", request.getResetToken(), Long.parseLong(prop.PASSWORD_VERIFICATION_THRESHOLD) / 60));
             }
         }else{
-            throw new IllegalStateException(String.format("Reset link %s not found in data store", request.getResetToken()));
+            throw new IllegalStateException(String.format("Reset link %s has expired", request.getResetToken()));
         }
         //Get email attached
         String email = checkedToken.get().getEmail();
         User user = userDao.findByEmail(email).orElseThrow(
                 () -> {
                     throw new UsernameNotFoundException(
-                            String.format(
-                                    "Reset link not found for %s",
-                                    email
-                            )
+                            "Reset link not recognized"
                     );
                 }
                 );
