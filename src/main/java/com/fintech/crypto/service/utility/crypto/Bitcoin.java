@@ -160,7 +160,7 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
 
             String balanceFound = "0.00";
             JSONObject resObject = res.getJSONObject("data");
-//            JSONArray avbalances = resObject.getJSONObject("available_balance");
+//            totalBalanceFound = resObject.getString("available_balance");
 
             JSONArray balances = resObject.getJSONArray("balances");
             if(balances.length() > 0){
