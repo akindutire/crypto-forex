@@ -41,6 +41,10 @@ public class Contract {
     public ResponseEntity<Map<String, Object>> generateAddressForPurchase(@Valid @RequestBody ContractPaymentAddressReq request){
         Map<String, Object> res = new HashMap<>();
 
+        if (!contractSvc.validateMinimumInvestment(request.getExpectedAmount(), request.getCurrency()) ){
+            throw new UnsupportedOperationException("Minimum deposit reached");
+        }
+
         Currency c = request.getCurrency();
         String address;
         if(c.equals(Currency.BTC) || c.equals(Currency.LTC) || c.equals(Currency.DGD)) {
