@@ -105,20 +105,27 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
         double balance = this.getBalance(paymentAddress);
 
         if(balance > 0){
+            Fold f = walletSvc.getRawFold(Currency.BTC.toString());
             if (balance >= providerAddress.getExpectedAmount()){
+
+                double excess = balance - providerAddress.getExpectedAmount();
+                if(excess > 0){
+                    f.setBalance( f.getBalance() + excess);
+                    foldDao.save(f);
+                }
+
                 providerAddress.setStatus("FULFILLED");
                 cryptoProviderAddressDao.save(providerAddress);
                 //Create contract
                 contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
             }else{
                 providerAddress.setStatus("PARTIALLY_FULFILLED");
+                providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() - balance);
                 cryptoProviderAddressDao.save(providerAddress);
-
-                Fold f = walletSvc.getRawFold(Currency.BTC.toString());
 
                 Transaction tnx2 = new Transaction();
                 tnx2.setCurrency(Currency.BTC);
-                tnx2.setAmount(providerAddress.getExpectedAmount());
+                tnx2.setAmount(balance);
                 tnx2.setFromType(FundSource.CRYPTO_PROVIDER);
                 tnx2.setFrom(providerAddress.getAddress());
                 tnx2.setToType(FundSource.WALLET);
@@ -160,8 +167,6 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
 
             String balanceFound = "0.00";
             JSONObject resObject = res.getJSONObject("data");
-//            totalBalanceFound = resObject.getString("available_balance");
-
             JSONArray balances = resObject.getJSONArray("balances");
             if(balances.length() > 0){
                 JSONObject balance = balances.getJSONObject(balances.length() - 1);

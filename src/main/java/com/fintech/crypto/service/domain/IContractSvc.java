@@ -151,7 +151,6 @@ public class IContractSvc implements ContractCt {
         notificationSvc.newContractNotice(contract, currency);
         notificationSvc.transactionCommitNotifications(tnx);
 
-
         notificationSvc.transactionCommitNotifications(tnx2);
 
         return contract;
