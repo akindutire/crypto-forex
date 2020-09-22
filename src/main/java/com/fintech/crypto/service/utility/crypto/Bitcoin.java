@@ -114,6 +114,7 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
                     foldDao.save(f);
                 }
 
+                providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() + f.getLedgerBal());
                 providerAddress.setStatus("FULFILLED");
                 cryptoProviderAddressDao.save(providerAddress);
                 //Create contract
@@ -137,7 +138,7 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
                 tnx2.setNonce(KeyGen.generateLong(tnx2.getFrom()+tnx2.getTo() + tnx2.getAmount() + tnx2.getType() + tnx2.getCurrency() + tnx2.getType() ) );
                 transactionDao.save(tnx2);
 
-                f.setBalance( f.getBalance() + balance);
+                f.setLedgerBal( f.getLedgerBal() + balance);
                 foldDao.save(f);
 
                 notificationSvc.transactionCommitNotifications(tnx2);
