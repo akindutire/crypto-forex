@@ -115,11 +115,11 @@ public class Dogecoin implements BlockIoCryptoProviderCt {
                 providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() + f.getLedgerBal());
                 providerAddress.setStatus("FULFILLED");
                 cryptoProviderAddressDao.save(providerAddress);
-                //Create contract
-                contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
 
+                //Create contract
                 f.setLedgerBal(0.00);
                 foldDao.save(f);
+                contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
             }else{
                 providerAddress.setStatus("PARTIALLY_FULFILLED");
                 providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() - balance);

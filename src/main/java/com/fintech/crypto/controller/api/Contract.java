@@ -51,12 +51,6 @@ public class Contract {
             address = "";
         }
 
-
-        if (!contractSvc.validateMinimumInvestment(request.getExpectedAmount(), request.getCurrency()) ){
-            throw new UnsupportedOperationException("Minimum deposit reached");
-        }
-
-
         res.put("status", HttpStatus.OK.value());
         res.put("code", HttpStatus.OK);
         res.put("message", request.getExpectedAmount() + " hashpower is expected on " +address);

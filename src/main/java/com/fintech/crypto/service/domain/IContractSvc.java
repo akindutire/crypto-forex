@@ -83,9 +83,14 @@ public class IContractSvc implements ContractCt {
                 )
         );
 
+        CryptoProviderAddress providerAddress = cryptoProviderAddressDao.findByAddress(paymentAddress).orElseThrow( () ->  new RuntimeException("Couldn't find payment expectation through "+paymentAddress)  );
         Fold fold = walletSvc.getRawFold(currency.toString());
 
-        CryptoProviderAddress providerAddress = cryptoProviderAddressDao.findByAddress(paymentAddress).orElseThrow( () ->  new RuntimeException("Couldn't find payment expectation through "+paymentAddress)  );
+        if (!this.validateMinimumInvestment(providerAddress.getExpectedAmount(), currency) ){
+            fold.setLedgerBal(fold.getLedgerBal() + providerAddress.getExpectedAmount());
+            foldDao.save(fold);
+            throw new UnsupportedOperationException("Minimum deposit reached");
+        }
 
         double hashPower = providerAddress.getExpectedAmount() * coin.getExchangeRateToHashPower();
         Contract contract = new Contract();
