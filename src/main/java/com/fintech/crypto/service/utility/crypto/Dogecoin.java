@@ -169,9 +169,16 @@ public class Dogecoin implements BlockIoCryptoProviderCt {
             String balanceFound = "0.00";
             JSONObject resObject = res.getJSONObject("data");
             JSONArray balances = resObject.getJSONArray("balances");
-            if(balances.length() > 0){
+
+            String nonce = balances.length()+""+resObject.getString("network")+address;
+            CryptoProviderAddress c = cryptoProviderAddressDao.findByNonce(nonce).orElse(new CryptoProviderAddress());
+
+            if(balances.length() > 0 && c.getNonce() == null){
                 JSONObject balance = balances.getJSONObject(balances.length() - 1);
                 balanceFound = balance.getString("available_balance");
+                c = cryptoProviderAddressDao.findByAddress(address).get();
+                c.setNonce(nonce);
+                cryptoProviderAddressDao.save(c);
             }
 
 //            totalBalanceFound = resObject.getString("available_balance");

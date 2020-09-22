@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface CryptoProviderAddressDao extends JpaRepository<CryptoProviderAddress, Long> {
     Optional<CryptoProviderAddress> findByAddress(String Address);
+    Optional<CryptoProviderAddress> findByNonce(String nonce);
     List<CryptoProviderAddress> findByStatus(String status);
 
     @Query(value = "select c from CryptoProviderAddress c where c.status != :S")
