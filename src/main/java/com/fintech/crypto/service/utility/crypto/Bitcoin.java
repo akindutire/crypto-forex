@@ -111,7 +111,6 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
                 double excess = balance - providerAddress.getExpectedAmount();
                 if(excess > 0){
                     f.setBalance( f.getBalance() + excess);
-                    foldDao.save(f);
                 }
 
                 providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() + f.getLedgerBal());
@@ -119,6 +118,9 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
                 cryptoProviderAddressDao.save(providerAddress);
                 //Create contract
                 contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
+
+                f.setLedgerBal(0.00);
+                foldDao.save(f);
             }else{
                 providerAddress.setStatus("PARTIALLY_FULFILLED");
                 providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() - balance);
