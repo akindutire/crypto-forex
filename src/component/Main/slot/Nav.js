@@ -65,7 +65,7 @@ class Nav extends Component {
 
                                     <li className="nav-item">
                                         <Link className="nav-link" to="/contracts" aria-expanded="false">
-                                            <i className="fas fa-chart-line"></i> Active Contracts
+                                            <i className="fas fa-chart-line"></i> Contract
                                         </Link>
                                     </li>
 

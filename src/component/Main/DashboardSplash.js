@@ -16,7 +16,6 @@ import axios from 'axios';
 
 
 class DashboardSplash extends Component{
-
     cancelToken = axios.CancelToken;
     source = this.cancelToken.source();
 
