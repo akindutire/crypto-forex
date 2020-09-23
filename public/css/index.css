@@ -1,0 +1,73 @@
+html{
+    scroll-behavior: inherit;
+}
+
+.row{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.white{
+    background: #ffffff;
+    color: #212121;
+}
+
+input, textarea {
+    color: #283593 !important;
+    font-weight: 400!important;
+}
+
+.navbar-crypto {
+    background-color: #1a237e!important;
+    color: #ffffff;
+}
+
+.round{
+    border-radius: 8px;
+}
+
+b{
+    font-weight: bold;
+}
+
+@media screen and (min-width: 768px) {
+    .navbar-expand-md .navbar-collapse {
+       display: none!important;
+    }
+}
+
+
+@media screen and (max-width: 991px) {
+    .navbar-expand-md .navbar-collapse {
+       display: none!important;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .navbar-expand-lg .navbar-collapse {
+       display: none!important;
+    }
+}
+
+
+footer li a {
+    padding-right: 0.8rem;
+    padding-left: 0.8rem;
+}
+
+ul#dashboardSplashList li:last-child{
+    border: 0px !important;
+}
+
+.price-bg{
+    background: #eceff1 !important;
+    color: #000000;
+}
+
+input:focus, textarea:focus, select:focus{
+    border-color:#80bdff; box-shadow:0 0 0 .2rem rgba(0,123,255,.25) !important;
+}
+/* 
+.tab-content >.active {
+    display: flex;
+} */
