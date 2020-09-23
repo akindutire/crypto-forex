@@ -19,7 +19,7 @@ class Purchase extends Component {
         BTC: 0.00090,
         ETH: 0.026,
         LTC: 0.21,
-        DOGE: 3.670,
+        DOGE: 3670,
         ZEC: 0.17,
         DASH: 0.14
     };
