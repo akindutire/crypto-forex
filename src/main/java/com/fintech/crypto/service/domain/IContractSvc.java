@@ -120,12 +120,6 @@ public class IContractSvc implements ContractCt {
         history.setContract(contract);
         history.setNote("Initialization:New contract created with opening amount of "+providerAddress.getExpectedAmount()+""+currency.toString()+" investment");
 
-        //Set up mining
-        MineHistory mh = new MineHistory();
-        mh.setContract(contract);
-        mh.setAmountMined(0.00);
-        mineHistoryDao.save(mh);
-
         contractHistoryDao.save(history);
         contractDao.save(contract);
         transactionDao.save(tnx);
@@ -149,8 +143,14 @@ public class IContractSvc implements ContractCt {
         tnx2.setType(TransactionType.REFERRAL_COMMISSION);
         tnx2.setNonce(KeyGen.generateLong(tnx.getFrom()+tnx.getTo() + tnx.getAmount() + tnx.getType() + tnx.getCurrency() + tnx.getType() ) );
         transactionDao.save(tnx2);
-        //Execute mail
 
+        //Set up mining
+        MineHistory mh = new MineHistory();
+        mh.setContract(contract);
+        mh.setAmountMined(0.00);
+        mineHistoryDao.save(mh);
+
+        //Execute mail
         notificationSvc.newContractNotice(contract, currency);
         notificationSvc.transactionCommitNotifications(tnx);
 
