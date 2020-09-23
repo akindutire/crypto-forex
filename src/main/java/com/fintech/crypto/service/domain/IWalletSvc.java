@@ -190,6 +190,13 @@ public class IWalletSvc implements WalletCt {
             throw new UnsupportedOperationException("Wallet has insufficient balance and withdrawal has been rejected");
         }
 
+        double limit = this.getWithdrawalLimit(t.getCurrency());
+        if(limit > 0){
+            if (t.getAmount() < limit){
+                throw new UnsupportedOperationException("Minimum withdrawal limit is "+limit+""+t.getCurrency().toString());
+            }
+        }
+
         f.setBalance(f.getBalance() - t.getAmount());
         foldDao.save(f);
 

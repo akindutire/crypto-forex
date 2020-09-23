@@ -303,7 +303,7 @@ public class IContractSvc implements ContractCt {
         }else if (currency.equals(Currency.LTC)){
             limit = 0.21;
         }else if (currency.equals(Currency.DOGE)){
-            limit = 3.670;
+            limit = 3670;
         }else if(currency.equals(Currency.ZEC)){
             limit = 0.17;
         }else if(currency.equals(Currency.DASH)){
