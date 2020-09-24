@@ -123,9 +123,16 @@ public class IContractSvc implements ContractCt {
         history.setNote("Initialization:New contract created with opening amount of "+providerAddress.getExpectedAmount()+""+currency.toString()+" investment/"+contract.getRef());
         contractHistoryDao.save(history);
 
+        //Set up mining
+        MineHistory mh = new MineHistory();
+        mh.setContract(rc);
+        mh.setAmountMined(0.00);
+        mineHistoryDao.save(mh);
+
         //Execute referral commission
         String rm = u.getReferredByUserEmail();
-        if(rm != null || rm.length() > 0){
+
+        if(rm != null){
             User refu = userSvc.findUser(rm);
             Fold refuF = walletSvc.getRawFold(currency.toString(), refu.getWallet().getKey());
             //Setup transaction
@@ -145,12 +152,6 @@ public class IContractSvc implements ContractCt {
             transactionDao.save(tnx2);
             notificationSvc.transactionCommitNotifications(tnx2);
         }
-
-        //Set up mining
-        MineHistory mh = new MineHistory();
-        mh.setContract(rc);
-        mh.setAmountMined(0.00);
-        mineHistoryDao.save(mh);
 
         //Execute mail
         notificationSvc.newContractNotice(contract, currency);

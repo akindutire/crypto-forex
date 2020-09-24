@@ -109,15 +109,17 @@ public class ProfileSvc implements ProfileCt {
 
             double amountMined = 0;
             if (cs != 0){
-
                 long days = Math.abs(Duration.between(LocalDateTime.now(), ct.get(0).getCreatedAt()).toDays());
-                amountMined = ct.stream().mapToDouble(
-                        (cti) -> {
+                if (days > 0) {
+                    amountMined = ct.stream().mapToDouble(
+                            (cti) -> {
                                 List<MineHistory> mh = mineHistoryDao.findByContract(cti);
                                 return mh.stream().mapToDouble(MineHistory::getAmountMined).sum();
                             }
-                ).sum() / days;
+                    ).sum() / days;
+                }
             }
+
             coinMinedPerDay.put(c.toString(), amountMined);
 
             coinMined.put(c.toString(), ct.stream().mapToDouble(Contract::getInterestAmountAccumulated).sum());
@@ -142,6 +144,19 @@ public class ProfileSvc implements ProfileCt {
             pwPair.put("LW", lwv);
 
             lastPurchasedAndWithdraw.put(c.toString(), pwPair);
+            if(user.getSecretFor2FA() != null && user.getSecretFor2FA().length() > 0){
+                String uri = totpSvc.getUriForImage(user.getSecretFor2FA());
+                res.setSecretFor2FAUri(uri);
+            }
+
+            String address = user.getWallet().getWithdrawalAddress();
+            if (address != null){
+                address = address.trim();
+            }else {
+                address = "";
+            }
+
+            res.setWithdrawalAddress(address);
         }
 
         res.setCoinMined(coinMined);
@@ -194,8 +209,16 @@ public class ProfileSvc implements ProfileCt {
             if (cs != 0){
 
                 long days = Math.abs(Duration.between(LocalDateTime.now(), ct.get(0).getCreatedAt()).toDays());
-                amountMined = ct.stream().mapToDouble(Contract::getInterestAmountAccumulated).sum() / Math.abs(days);
+                if (days > 0) {
+                    amountMined = ct.stream().mapToDouble(
+                            (cti) -> {
+                                List<MineHistory> mh = mineHistoryDao.findByContract(cti);
+                                return mh.stream().mapToDouble(MineHistory::getAmountMined).sum();
+                            }
+                    ).sum() / Math.abs(days);
+                }
             }
+
             coinMinedPerDay.put(c.toString(), amountMined);
 
             coinMined.put(c.toString(), ct.stream().mapToDouble(Contract::getInterestAmountAccumulated).sum());
