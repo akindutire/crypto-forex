@@ -24,6 +24,9 @@ public class CryptoProviderAddress extends AbstractEntity{
     @Column(name = "expected_amount", nullable = false)
     private double expectedAmount;
 
+    @Column(name = "reserved_amount", nullable = false)
+    private double reservedAmount = 0;
+
     @Column(name = "purpose", updatable = false)
     @Enumerated(EnumType.STRING)
     private CryptoAddressPurpose purpose;

@@ -127,8 +127,8 @@ public class NotificationSvc {
 
             System.out.println("=================fund source is wallet, tnx_Ref:"+tnx.getRef()+"/ email:" +email);
 
-            mailer.send("Crypto Fx Transaction", String.format("[%s]Transaction Receipt", tnx.getType()),"", String.format(
-                    "<b>"+tnx.getStatus()+"</b>: %s transaction has been executed from %s to a %s\nAmt:%f \nCurrency: %s\nDetails:%s",
+            mailer.send("Crypto Fx Transaction", "",String.format("[%s]Transaction Receipt", tnx.getType()), String.format(
+                    "<b>"+tnx.getStatus()+"</b>: %s transaction has been executed from %s to a %s<br/>Amt:%f <br/>Currency: %s<br/>Details:%s",
                     tnx.getRef(),
                     name,
                     tnx.getToType()+"("+tnx.getTo()+")",
@@ -140,8 +140,8 @@ public class NotificationSvc {
 
             if(tnx.getToType().equals(FundSource.WALLET)) {
 
-                mailer.send("Crypto Fx Transaction", String.format("[%s]Transaction Receipt", tnx.getType()), "", String.format(
-                        "<b>" + tnx.getStatus() + "</b>: %s transaction has been executed from %s\nAmt:%f \nCurrency: %s\nDetails:%s",
+                mailer.send("Crypto Fx Transaction", "", String.format("[%s]Transaction Receipt", tnx.getType()), String.format(
+                        "<b>" + tnx.getStatus() + "</b>: %s transaction has been executed from %s <br/><b>Amt:</b>%f <br/><b>Currency:</b> %s<br/>Details:%s",
                         tnx.getRef(),
                         name,
                         tnx.getAmount(),
@@ -160,8 +160,8 @@ public class NotificationSvc {
 
             System.out.println("=================fund source is crypto provider, tnx_Ref:"+tnx.getRef()+"/ email:" +email);
 
-            mailer.send("Crypto Fx Transaction", String.format("[%s] Transaction Receipt", tnx.getType()),"", String.format(
-                    "<b>"+tnx.getStatus()+"</b>: %s transaction has been completed\nAmt:%f \nCurrency: %s\nDetails:%s",
+            mailer.send("Crypto Fx Transaction", "",String.format("[%s] Transaction Receipt", tnx.getType()), String.format(
+                    "<b>"+tnx.getStatus()+"</b>: %s transaction has been completed<br/><b>Amt:</b>%f <br/><b>Currency:</b> %s<br/><b>Details:</b>%s",
                     tnx.getRef(),
                     tnx.getAmount(),
                     tnx.getCurrency(),

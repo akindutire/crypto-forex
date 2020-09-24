@@ -99,6 +99,7 @@ public class IContractSvc implements ContractCt {
         contract.setInterestAmountAccumulated(0);
         contract.setAmountInvested(providerAddress.getExpectedAmount());
         contract.setStatus(ContractStatus.ACTIVE);
+        Contract rc = contractDao.save(contract);
 
         //Setup transaction
         Transaction tnx = new Transaction();
@@ -114,47 +115,46 @@ public class IContractSvc implements ContractCt {
         tnx.setType(TransactionType.PURCHASE);
         tnx.setNonce(KeyGen.generateLong(tnx.getFrom()+tnx.getTo() + tnx.getAmount() + tnx.getType() + tnx.getCurrency() + tnx.getType() ) );
         //Append tnx
-        tnx.setContract(contract);
+        tnx.setContract(rc);
+        transactionDao.save(tnx);
 
         ContractHistory history = new ContractHistory();
-        history.setContract(contract);
-        history.setNote("Initialization:New contract created with opening amount of "+providerAddress.getExpectedAmount()+""+currency.toString()+" investment");
-
+        history.setContract(rc);
+        history.setNote("Initialization:New contract created with opening amount of "+providerAddress.getExpectedAmount()+""+currency.toString()+" investment/"+contract.getRef());
         contractHistoryDao.save(history);
-        contractDao.save(contract);
-        transactionDao.save(tnx);
 
         //Execute referral commission
         String rm = u.getReferredByUserEmail();
-        User refu = userSvc.findUser(rm);
-        Fold refuF = walletSvc.getRawFold(currency.toString(), refu.getWallet().getKey());
-        //Setup transaction
-        double refamount = (5/100) * providerAddress.getExpectedAmount();
-        Transaction tnx2 = new Transaction();
-        tnx2.setCurrency(currency);
-        tnx2.setAmount(refamount);
-        tnx2.setFromType(FundSource.HOST_PROVIDER);
-        tnx2.setFrom("001-cryto-forex");
-        tnx2.setToType(FundSource.WALLET);
-        tnx2.setTo(refuF.getRef());
-        tnx2.setMode(TransactionMode.INTER_FUND);
-        tnx2.setNote("Referral commision on "+u.getName());
-        tnx2.setStatus(TransactionStatus.CONFIRMED);
-        tnx2.setType(TransactionType.REFERRAL_COMMISSION);
-        tnx2.setNonce(KeyGen.generateLong(tnx.getFrom()+tnx.getTo() + tnx.getAmount() + tnx.getType() + tnx.getCurrency() + tnx.getType() ) );
-        transactionDao.save(tnx2);
+        if(rm != null || rm.length() > 0){
+            User refu = userSvc.findUser(rm);
+            Fold refuF = walletSvc.getRawFold(currency.toString(), refu.getWallet().getKey());
+            //Setup transaction
+            double refamount = (5/100) * providerAddress.getExpectedAmount();
+            Transaction tnx2 = new Transaction();
+            tnx2.setCurrency(currency);
+            tnx2.setAmount(refamount);
+            tnx2.setFromType(FundSource.HOST_PROVIDER);
+            tnx2.setFrom("001-cryto-forex");
+            tnx2.setToType(FundSource.WALLET);
+            tnx2.setTo(refuF.getRef());
+            tnx2.setMode(TransactionMode.INTER_FUND);
+            tnx2.setNote("Referral commision on "+u.getName());
+            tnx2.setStatus(TransactionStatus.CONFIRMED);
+            tnx2.setType(TransactionType.REFERRAL_COMMISSION);
+            tnx2.setNonce(KeyGen.generateLong(tnx.getFrom()+tnx.getTo() + tnx.getAmount() + tnx.getType() + tnx.getCurrency() + tnx.getType() ) );
+            transactionDao.save(tnx2);
+            notificationSvc.transactionCommitNotifications(tnx2);
+        }
 
         //Set up mining
         MineHistory mh = new MineHistory();
-        mh.setContract(contract);
+        mh.setContract(rc);
         mh.setAmountMined(0.00);
         mineHistoryDao.save(mh);
 
         //Execute mail
         notificationSvc.newContractNotice(contract, currency);
         notificationSvc.transactionCommitNotifications(tnx);
-
-        notificationSvc.transactionCommitNotifications(tnx2);
 
         return contract;
     }

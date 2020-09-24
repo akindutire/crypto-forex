@@ -104,45 +104,22 @@ public class Dogecoin implements BlockIoCryptoProviderCt {
         double balance = this.getBalance(paymentAddress);
 
         if(balance > 0){
-            Fold f = walletSvc.getRawFold(Currency.DOGE.toString());
 
             if (balance >= providerAddress.getExpectedAmount()){
-                double excess = balance - providerAddress.getExpectedAmount();
-                if(excess > 0){
-                    f.setBalance( f.getBalance() + excess);
-                }
 
-                providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() + f.getLedgerBal());
+                double ra = providerAddress.getReservedAmount();
+                providerAddress.setExpectedAmount(balance + ra);
+                providerAddress.setReservedAmount(0.00);
                 providerAddress.setStatus("FULFILLED");
                 cryptoProviderAddressDao.save(providerAddress);
 
                 //Create contract
-                f.setLedgerBal(0.00);
-                foldDao.save(f);
                 contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
             }else{
                 providerAddress.setStatus("PARTIALLY_FULFILLED");
                 providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() - balance);
+                providerAddress.setReservedAmount(providerAddress.getReservedAmount() + balance);
                 cryptoProviderAddressDao.save(providerAddress);
-
-                Transaction tnx2 = new Transaction();
-                tnx2.setCurrency(Currency.DOGE);
-                tnx2.setAmount(balance);
-                tnx2.setFromType(FundSource.CRYPTO_PROVIDER);
-                tnx2.setFrom(providerAddress.getAddress());
-                tnx2.setToType(FundSource.WALLET);
-                tnx2.setTo(f.getRef());
-                tnx2.setMode(TransactionMode.INTER_FUND);
-                tnx2.setNote("Contract payment converted to wallet topup ");
-                tnx2.setStatus(TransactionStatus.CONFIRMED);
-                tnx2.setType(TransactionType.WALLET_TOPUP);
-                tnx2.setNonce(KeyGen.generateLong(tnx2.getFrom()+tnx2.getTo() + tnx2.getAmount() + tnx2.getType() + tnx2.getCurrency() + tnx2.getType() ) );
-                transactionDao.save(tnx2);
-
-                f.setLedgerBal( f.getLedgerBal() + balance);
-                foldDao.save(f);
-
-                notificationSvc.transactionCommitNotifications(tnx2);
             }
             return true;
         }else{
@@ -176,9 +153,12 @@ public class Dogecoin implements BlockIoCryptoProviderCt {
             if(balances.length() > 0 && c.getNonce() == null){
                 JSONObject balance = balances.getJSONObject(balances.length() - 1);
                 balanceFound = balance.getString("available_balance");
-                c = cryptoProviderAddressDao.findByAddress(address).get();
-                c.setNonce(nonce);
-                cryptoProviderAddressDao.save(c);
+                if(Double.parseDouble(balanceFound) > 0){
+                    c = cryptoProviderAddressDao.findByAddress(address).get();
+                    c.setNonce(nonce);
+                    c.setModifiedAt();
+                    cryptoProviderAddressDao.save(c);
+                }
             }
 
 //            totalBalanceFound = resObject.getString("available_balance");
@@ -192,7 +172,6 @@ public class Dogecoin implements BlockIoCryptoProviderCt {
 //            }
 
             return Double.parseDouble(balanceFound);
-
         } catch (UnirestException e) {
             throw new RuntimeException("Connection not successful, wallet not created, please try again. " + e.getMessage());
         }
