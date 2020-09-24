@@ -7,7 +7,7 @@ export const getTransactions = ( currency, sesReqToken ) => {
 
         const res = await fetchTransactions(currency, sesReqToken);
 
-        console.log("get fetchWalletAddressToPayTo feedback", res);
+        // console.log("get fetchWalletAddressToPayTo feedback", res);
 
         dispatch({
             type: "FETCH_TRANSACTIONS",
@@ -24,7 +24,7 @@ export const getWithdrawals = ( currency, sesReqToken ) => {
 
         const res = await fetchAllWithdrawals(currency, sesReqToken);
 
-        console.log("get fetchWalletAddressToPayTo feedback", res);
+        // console.log("get fetchWalletAddressToPayTo feedback", res);
 
         dispatch({
             type: "FETCH_USERS_WITHDRAWAL_TRANSACTIONS",
@@ -41,7 +41,7 @@ export const doApproveWithrawalRequest = ( ref ) => {
 
         const res = await approveWithrawalRequest(ref);
 
-        console.log("get fetchWalletAddressToPayTo feedback", res);
+        // console.log("get fetchWalletAddressToPayTo feedback", res);
 
         dispatch({
             type: "APPROVE_USER_WITHDRAWAL_TRANSACTION",

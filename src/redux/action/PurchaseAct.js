@@ -7,7 +7,7 @@ export const probeUserPayment = ( currency, expectedCryptoVal ) => {
 
         const res = await probePayment(currency, expectedCryptoVal);
 
-        console.log("get fetchWalletAddressToPayTo feedback", res);
+        // console.log("get fetchWalletAddressToPayTo feedback", res);
 
         dispatch({
                 type: "PROBE_PAYMENT",
@@ -23,7 +23,7 @@ export const fetchWalletAddressToPayTo = ( currency, expectedCryptoVal ) => {
 
         const res = await initiateContractViaPaymentSetup(currency, expectedCryptoVal);
 
-        console.log("get fetchWalletAddressToPayTo feedback", res);
+        // console.log("get fetchWalletAddressToPayTo feedback", res);
 
         dispatch({
                 type: "FETCH_WALLET_ADDRESS_TO_PAY_TO",
@@ -40,7 +40,7 @@ export const fetchUnfulfilledPaymentExpectation = ( currency, sesReqToken ) => {
 
         const res = await unfulfilledPaymentExpectation(currency, sesReqToken);
 
-        console.log("get fetchWalletAddressToPayTo feedback", res);
+        // console.log("get fetchWalletAddressToPayTo feedback", res);
 
         dispatch({
                 type: "FETCH_UNFULFILLED_PAYMENT_EXPECTATION",

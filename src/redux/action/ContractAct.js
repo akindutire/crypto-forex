@@ -6,7 +6,7 @@ export const getContracts = (sesReqToken) => {
 
         const res = await fetchContracts(sesReqToken);
 
-        console.log("get currencies feedback", res);
+        // console.log("get currencies feedback", res);
 
         dispatch({
             type: "FETCH_CONTRACTS",
@@ -21,7 +21,7 @@ export const getContractsForAFold = (currency, sesReqToken) => {
 
         const res = await fetchContractsByCurrencyOfAFold(currency, sesReqToken);
 
-        console.log("get contracts feedback", res);
+        // console.log("get contracts feedback", res);
 
         dispatch({
             type: "FETCH_CONTRACTS_FOR_A_FOLD_THROUGH_CURRENCY",
@@ -36,7 +36,7 @@ export const renewContract = (ref, sesReqToken) => {
 
         const res = await contractRenewal(ref, sesReqToken);
 
-        console.log("get currencies feedback", res);
+        // console.log("get currencies feedback", res);
 
         dispatch({
             type: "RENEW_CONTRACT",
@@ -51,7 +51,7 @@ export const releaseContract = (ref, sesReqToken) => {
 
         const res = await contractRelease(ref, sesReqToken);
 
-        console.log("get currencies feedback", res);
+        // console.log("get currencies feedback", res);
 
         dispatch({
             type: "RELEASE_CONTRACT",
@@ -66,7 +66,7 @@ export const moveFundsToFold = (currency, ref, amount) => {
 
         const res = await moveFundsToAWalletFold(currency, ref, amount);
 
-        console.log("get currencies feedback", res);
+        // console.log("get currencies feedback", res);
 
         dispatch({
             type: "MOVE_FUNDS_TO_FOLD",

@@ -103,7 +103,7 @@ export const getProfile = (sessToken) => {
 
         const res = await fetchCurProfile(sessToken);
 
-        console.log("fetch profile feedback", res);
+        // console.log("fetch profile feedback", res);
 
         dispatch({
                 type: "GET_CURRENT_USER_PROFILE",

@@ -7,7 +7,7 @@ export const withdraw = ( payload ) => {
 
         const res = await withdrawFund(payload);
 
-        console.log("get fetchWalletAddressToPayTo feedback", res);
+        // console.log("get fetchWalletAddressToPayTo feedback", res);
 
         dispatch({
             type: "WITHDRAW",

@@ -18,7 +18,7 @@ export const selectAWalletFold = (currency, sesReqToken) => {
 
         const res = await fetchFold(currency, sesReqToken);
 
-        console.log("get currencies feedback", res);
+        // console.log("get currencies feedback", res);
 
         dispatch({
                 type: "FETCH_WALLET_FOLD_FOR_A_CURRENCY",
@@ -33,7 +33,7 @@ export const getCurrencies = (sesReqToken) => {
 
         const res = await fetchCurrencies(sesReqToken);
 
-        console.log("get currencies feedback", res);
+        // console.log("get currencies feedback", res);
 
         dispatch({
                 type: "FETCH_COIN_CURRENCIES",
@@ -48,17 +48,14 @@ export const getMinableCoins = (sesReqToken) => {
 
         const res = await fetchCoins(sesReqToken);
 
-        console.log("get minable feedback", res);
+        // console.log("get minable feedback", res);
 
         dispatch({
                 type: "FETCH_MINABLE_COIN",
                 payload: res
             });
     }
-    // return {
-    //     type: "FETCH_MINABLE_COIN",
-    //     payload: [ { key : 'ETH', name: 'Ethereum mining' } , {key : 'BTC', name: 'Bitcoin mining'}, {key : 'DOGE', name: 'Doge mining'}, {key : 'LTC', name: 'Litecoin mining'} ]
-    // };
+  
 };
 
 export const getAllCoins = (sesReqToken) => {
@@ -67,7 +64,7 @@ export const getAllCoins = (sesReqToken) => {
 
         const res = await fetchAllCoins(sesReqToken);
 
-        console.log("get all coins feedback", res);
+        // console.log("get all coins feedback", res);
 
         dispatch({
                 type: "FETCH_ALL_COIN",
@@ -97,7 +94,7 @@ export const fetchACoin = (ref, sesReqToken) => {
 
         const res = await findACoin(ref, sesReqToken);
 
-        console.log("get minable feedback", res);
+        // console.log("get minable feedback", res);
 
         dispatch({
                 type: "FETCH_A_COIN",
@@ -112,7 +109,7 @@ export const fetchACoinRates = (sesReqToken) => {
 
         const res = await fetchRates(sesReqToken);
 
-        console.log("get minable feedback", res);
+        // console.log("get minable feedback", res);
 
         dispatch({
                 type: "FETCH_A_COIN_RATES",
@@ -127,7 +124,7 @@ export const editOrAddRate = (sesReqToken) => {
 
         const res = await appendOrUpdateRate(sesReqToken);
 
-        console.log("get minable feedback", res);
+        // console.log("get minable feedback", res);
 
         dispatch({
                 type: "EDIT_OR_ADD_A_COIN_RATE",
@@ -142,7 +139,7 @@ export const updateACoin = (sesReqToken) => {
 
         const res = await updateCoin(sesReqToken);
 
-        console.log("get minable feedback", res);
+        // console.log("get minable feedback", res);
 
         dispatch({
                 type: "EDIT_A_COIN",
@@ -157,7 +154,7 @@ export const toggleACoinMiningStatus = (sesReqToken) => {
 
         const res = await toggleMineable(sesReqToken);
 
-        console.log("get minable feedback", res);
+        // console.log("get minable feedback", res);
 
         dispatch({
                 type: "TOGGLE_A_COIN_MINING_STATUS",

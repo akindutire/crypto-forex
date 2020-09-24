@@ -247,9 +247,9 @@ class Dashboard extends Component{
                                         this.state.fold.balance !== undefined ? 
                                         <div className="col-10">
                                             
-                                            <p>Available balance</p> <p><span className=""><b>{this.state.fold.ledgerBal.toFixed(8)}</b></span> <span>{this.state.fold.currency}</span></p>
+                                            <p>Available balance</p> <p><span className=""><b>{this.state.fold.balance.toFixed(8)}</b></span> <span>{this.state.fold.currency}</span></p>
                                         
-                                            <p>Ledger balance</p> <p><span className="text-muted"><b>{this.state.fold.ledgerBal.toFixed(8)}</b></span> <span>{this.state.fold.currency}</span></p>
+                                            {/* <p>Ledger balance</p> <p><span className="text-muted"><b>{this.state.fold.ledgerBal.toFixed(8)}</b></span> <span>{this.state.fold.currency}</span></p> */}
                                         
                                         </div>
                                         :

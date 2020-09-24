@@ -385,12 +385,21 @@ class Profile extends Component {
                                                     <div key={i} className="col-sm-12 col-md-6">
                                                         <div className="card" onClick={ () => { this.handlePurchase(c.expectedAmount * this.state.cur_coin.exchangeRateToHashPower, c.address) } } style={ {backgroundColor: "#e8eaf6 "} }>
                                                             <div className="card-body" >
-                                                                <h6 className="author float-left">{c.expectedAmount * this.state.cur_coin.exchangeRateToHashPower}{this.state.cur_coin.hashPowerUnit}</h6>
-                                                                <span className="category-social text-info float-right">
-                                                                    <i className="fa fa-circle text-success"></i> {c.expectedAmount}{c.currency}
+                                                                <h6 className="author float-left">
+                                                                    <i className="fa fa-arrow-down text-muted"></i> {c.expectedAmount * this.state.cur_coin.exchangeRateToHashPower}{this.state.cur_coin.hashPowerUnit}
+                                                                     <br /> 
+                                                                     <i className="fa fa-arrow-down text-success"></i> {c.reservedAmount * this.state.cur_coin.exchangeRateToHashPower}{this.state.cur_coin.hashPowerUnit}
+                                                                     
+                                                                </h6>
+
+                                                                <span className="category-social text-danger float-right">
+                                                                    <i className="fa fa-circle text-muted"></i> {c.expectedAmount.toFixed(8)} <b>{c.currency}</b>
+                                                                    <br />
+                                                                    <i className="fa fa-circle text-success"></i> {c.reservedAmount.toFixed(8)} <b>{c.currency}</b>
                                                                 </span>
                                                                 <div className="clearfix"></div>
                                                                 
+
                                                             </div>
                                                         </div>
                                                     </div>

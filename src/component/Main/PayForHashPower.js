@@ -42,7 +42,7 @@ class PayForHashPower extends Component{
 
         const hashPwr = this.props.hashPowerToPurchase.h;
         const addr = this.props.hashPowerToPurchase.ad; 
-        const amount = hashPwr / this.props.coinSelected.exchangeRateToHashPower;
+        const amount = (hashPwr / this.props.coinSelected.exchangeRateToHashPower).toFixed(8);
         if( amount > 0){
             this.setState({amount});
             if(addr === undefined){
