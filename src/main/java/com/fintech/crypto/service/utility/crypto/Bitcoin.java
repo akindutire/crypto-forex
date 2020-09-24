@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,7 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
     }
 
     @Override
+    @Transactional
     public Boolean probePayment(String paymentAddress) {
         CryptoProviderAddress providerAddress = cryptoProviderAddressDao.findByAddress(paymentAddress).orElseThrow( () ->  new RuntimeException("Couldn't find payment expectation through "+paymentAddress)  );
         double balance = this.getBalance(paymentAddress);
@@ -177,10 +179,13 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
             if(balances.length() > 0 && c.getNonce() == null){
                 JSONObject balance = balances.getJSONObject(balances.length() - 1);
                 balanceFound = balance.getString("available_balance");
-                c = cryptoProviderAddressDao.findByAddress(address).get();
-                c.setNonce(nonce);
-                c.setModifiedAt();
-                cryptoProviderAddressDao.save(c);
+                if(Double.parseDouble(balanceFound) > 0){
+                    c = cryptoProviderAddressDao.findByAddress(address).get();
+                    c.setNonce(nonce);
+                    c.setModifiedAt();
+                    cryptoProviderAddressDao.save(c);
+                }
+
             }
 
 //            totalBalanceFound = resObject.getString("available_balance");
