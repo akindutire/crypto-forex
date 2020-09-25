@@ -75,7 +75,7 @@ public class NotificationSvc {
         mailer.send(
                 "Hash power order received",
                 "Crypto FX", "Your Hashpower Order has been Received",
-                String.format("Dear %s, <br>We have successfully received your purchase and contract %s! has been initialized, your mining start at 0.00 with an investment of %s%s.<br/>Thank you for choosing Crypto Forex as your gateway to trading and the world of cloud crypto mining!<br/><p style='text-align: center'><a href='%s'>Learn more</a></p>", contract.getUser().getName(),contract.getRef(), contract.getAmountInvested(), c.toString(), aboutLink),
+                String.format("Dear %s, <br>We have successfully received your purchase and contract <b>#%s</b> has been initialized, your mining start at <b>0.00</b> with an investment of <b>%s%s</b>.<br/>Thank you for choosing Crypto Forex as your gateway to trading and the world of cloud crypto mining!<br/><p style='text-align: center'><a href='%s'>Learn more</a></p>", contract.getUser().getName(),contract.getRef(), contract.getAmountInvested(), c.toString(), aboutLink),
                 prop.FROM_MAIL_ADDRESS,
                 contract.getUser().getEmail()
         );
@@ -128,7 +128,7 @@ public class NotificationSvc {
             System.out.println("=================fund source is wallet, tnx_Ref:"+tnx.getRef()+"/ email:" +email);
 
             mailer.send("Crypto Fx Transaction", "",String.format("[%s]Transaction Receipt", tnx.getType()), String.format(
-                    "<b>"+tnx.getStatus()+"</b>: %s transaction has been executed from %s to a %s<br/>Amt:%f <br/>Currency: %s<br/>Details:%s",
+                    "<b>"+tnx.getStatus()+"</b>: %s transaction has been executed from %s to a %s<br/>Amt:%f <br/>Currency: %s<br/>Details:%s<br />",
                     tnx.getRef(),
                     name,
                     tnx.getToType()+"("+tnx.getTo()+")",
@@ -141,7 +141,7 @@ public class NotificationSvc {
             if(tnx.getToType().equals(FundSource.WALLET)) {
 
                 mailer.send("Crypto Fx Transaction", "", String.format("[%s]Transaction Receipt", tnx.getType()), String.format(
-                        "<b>" + tnx.getStatus() + "</b>: %s transaction has been executed from %s <br/><b>Amt:</b>%f <br/><b>Currency:</b> %s<br/>Details:%s",
+                        "<b>" + tnx.getStatus() + "</b>: %s transaction has been executed from %s <br/><b>Amt:</b>%f <br/><b>Currency:</b> %s<br/>Details:%s <br />",
                         tnx.getRef(),
                         name,
                         tnx.getAmount(),
@@ -161,7 +161,7 @@ public class NotificationSvc {
             System.out.println("=================fund source is crypto provider, tnx_Ref:"+tnx.getRef()+"/ email:" +email);
 
             mailer.send("Crypto Fx Transaction", "",String.format("[%s] Transaction Receipt", tnx.getType()), String.format(
-                    "<b>"+tnx.getStatus()+"</b>: %s transaction has been completed<br/><b>Amt:</b>%f <br/><b>Currency:</b> %s<br/><b>Details:</b>%s",
+                    "<b>"+tnx.getStatus()+"</b>: %s transaction has been completed<br/><b>Amt:</b>%f <br/><b>Currency:</b> %s<br/><b>Details:</b>%s<br />",
                     tnx.getRef(),
                     tnx.getAmount(),
                     tnx.getCurrency(),

@@ -102,7 +102,7 @@ public class Litecoin implements BlockIoCryptoProviderCt {
     public Boolean probePayment(String paymentAddress) {
         CryptoProviderAddress providerAddress = cryptoProviderAddressDao.findByAddress(paymentAddress).orElseThrow( () ->  new RuntimeException("Couldn't find payment expectation through "+paymentAddress)  );
         double balance = this.getBalance(paymentAddress);
-      
+
         if(balance > 0){
 
             if (balance >= providerAddress.getExpectedAmount()){
