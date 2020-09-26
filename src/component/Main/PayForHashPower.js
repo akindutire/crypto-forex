@@ -69,7 +69,7 @@ class PayForHashPower extends Component{
                 throw { status: serverRes.status, message: serverRes.data  }
             }
 
-            this.setState({ address: serverRes.data.address});
+            this.setState({ address: serverRes.data.address.trim()});
         
         }catch(e){
             if(typeof e.message == "object" || e.status === 401 || e.status === 403){
@@ -156,10 +156,10 @@ class PayForHashPower extends Component{
                                 
                                 <div className="col-12 text-center">
                                     {
-                                        this.state.address.length > 0 ?
+                                        typeof this.state.address != null || typeof this.state.address != undefined || this.state.address.length > 0 ?
                                             <>                                          
-                                                <QRCode value={this.state.address.trim()} /><br /><br />
-                                                <p style={{wordWrap: "break-word"}}>{this.state.address.trim()}</p>
+                                                <QRCode value={this.state.address} /><br /><br />
+                                                <p style={{wordWrap: "break-word"}}>{this.state.address}</p>
                                             </>
                                         :
                                             <p className="d-block w-100 text-center">

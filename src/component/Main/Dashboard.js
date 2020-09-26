@@ -234,7 +234,7 @@ class Dashboard extends Component{
                                                 this.state.coinMined > 0 ?
                                                     <i className="fas fa-fan fa-spin text-success"></i>
                                                 :
-                                                <><i className="fas fa-fan text-muted"></i> <em className="text-muted">Inactive</em></>
+                                                    <em className="text-muted">Inactive</em>
                                             }
                                             
                                         </span>
@@ -412,7 +412,7 @@ class Dashboard extends Component{
                                                 this.state.coinMined > 0 ?
                                                     <><i className="fas fa-vector-square text-success"></i> Active</>
                                                 :
-                                                    null
+                                                    <i></i> 
                                             }
                                         </span>
                                     </div>
