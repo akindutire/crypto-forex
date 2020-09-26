@@ -54,8 +54,6 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
     @Autowired
     TransactionDao transactionDao;
 
-
-
     @Override
     public String getRandomAddress(double expectedAmount) {
 

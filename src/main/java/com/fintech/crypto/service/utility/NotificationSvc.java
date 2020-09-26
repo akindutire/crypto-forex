@@ -69,7 +69,7 @@ public class NotificationSvc {
     }
 
     public void newContractNotice(Contract contract, Currency c) {
-        // Send welcome email
+
         String aboutLink = prop.APP_DOMAIN_ADDRESS+"/about";
 
         mailer.send(
@@ -78,6 +78,24 @@ public class NotificationSvc {
                 String.format("Dear %s, <br>We have successfully received your purchase and contract <b>#%s</b> has been initialized, your mining start at <b>0.00</b> with an investment of <b>%s%s</b>.<br/>Thank you for choosing Crypto Forex as your gateway to trading and the world of cloud crypto mining!<br/><p style='text-align: center'><a href='%s'>Learn more</a></p>", contract.getUser().getName(),contract.getRef(), contract.getAmountInvested(), c.toString(), aboutLink),
                 prop.FROM_MAIL_ADDRESS,
                 contract.getUser().getEmail()
+        );
+    }
+
+    public void addresskeychainNotice(String to, String address, String pk, double amount, Currency c) {
+
+        String aboutLink = prop.APP_DOMAIN_ADDRESS+"/about";
+
+        mailer.send(
+                "Crypto Fx - Payment Address details",
+                "Crypto FX", "Address details",
+                String.format("<br>Kindly use the below address to pay a sum of <b>%s%s</b> to activate a contract on Crypto Fx<br><b>Address:</b>%s<br><b>Public key:</b>%s<a href='%s'>Learn more</a></p>",
+                        amount,
+                        c.toString()
+                        ,address,
+                        pk,
+                        aboutLink),
+                prop.FROM_MAIL_ADDRESS,
+                to
         );
     }
 

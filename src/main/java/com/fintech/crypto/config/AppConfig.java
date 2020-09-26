@@ -5,6 +5,8 @@ import com.fintech.crypto.prop.AppProp;
 import com.fintech.crypto.task.MineCoin;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
+import org.apache.http.impl.client.HttpClients;
+import org.brunocvcunha.coinpayments.CoinPayments;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -82,6 +84,15 @@ public class AppConfig implements WebMvcConfigurer {
         });
     }
 
+    @Bean
+    public CoinPayments coinPaymentInstance(){
+        CoinPayments api = CoinPayments.builder()
+                .publicKey(prop.COINPAYMENT_PK)
+                .privateKey(prop.COINPAYMENT_PR)
+                .client(HttpClients.createDefault()).build();
+
+        return api;
+    }
     //Every after every 4hr from now
     @Scheduled(fixedDelay = 14400000)
     public void scheduleMining() {

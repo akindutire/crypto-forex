@@ -46,8 +46,12 @@ public class AppProp {
     @Value("${block.io.base.address}")
     public String BLOCKIO_BASE_URL;
 
-    @Value("${block.cypher.base.address}")
-    public String BLOCKCYPHER_BASE_URL;
+    @Value("${coin.payment.base.address}")
+    public String COINPAYMENT_BASE_URL;
+    @Value("${coin.payment.base.public.api.key}")
+    public String COINPAYMENT_PK;
+    @Value("${coin.payment.base.private.api.key}")
+    public String COINPAYMENT_PR;
 
     @Value("${crypt.api.key.bitcoin}")
     public String CRYPT_API_KEY_BTC;

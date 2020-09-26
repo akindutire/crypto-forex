@@ -1,6 +1,8 @@
 package com.fintech.crypto.controller.api;
 
+import com.fintech.crypto.contract.BlockCypherCryptoProviderCt;
 import com.fintech.crypto.contract.BlockIoCryptoProviderCt;
+import com.fintech.crypto.contract.CoinPaymentCt;
 import com.fintech.crypto.contract.CryptoProvider;
 import com.fintech.crypto.enums.Currency;
 import com.fintech.crypto.factory.CryptoProviderFactory;
@@ -45,6 +47,9 @@ public class Contract {
         if(c.equals(Currency.BTC) || c.equals(Currency.LTC) || c.equals(Currency.DOGE)) {
             BlockIoCryptoProviderCt cryptoProvider = (BlockIoCryptoProviderCt) cryptoProviderFactory.getProvider(c);
             address = cryptoProvider.getRandomAddress(request.getExpectedAmount());
+        }else if (c.equals(Currency.ETH)){
+            CoinPaymentCt cryptoProvider = (CoinPaymentCt) cryptoProviderFactory.getProvider(c);
+            address = cryptoProvider.getRandomAddress(request.getExpectedAmount());
         }else{
             CryptoProvider cryptoProvider = cryptoProviderFactory.getProvider(c);
             address = "";
@@ -69,6 +74,9 @@ public class Contract {
             if(c.equals(Currency.BTC) || c.equals(Currency.LTC) || c.equals(Currency.DOGE)) {
                 BlockIoCryptoProviderCt cryptoProvider = (BlockIoCryptoProviderCt) cryptoProviderFactory.getProvider(c);
                 paymentState = cryptoProvider.probePayment(request.getPaymentAddress());
+            }else if (c.equals(Currency.ETH)){
+                CoinPaymentCt cryptoProvider = (CoinPaymentCt) cryptoProviderFactory.getProvider(c);
+                paymentState = false;
             }else{
                 CryptoProvider cryptoProvider = cryptoProviderFactory.getProvider(c);
                 paymentState = false;

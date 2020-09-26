@@ -34,7 +34,7 @@ public class CryptoProviderFactory {
         }else if (currency.equals(Currency.LTC)){
             return litecoin;
         }else if(currency.equals(Currency.ETH)){
-            throw new IllegalStateException("Address not available");
+            return ethereum;
         }else if (currency.equals(Currency.DOGE)){
             return dogecoin;
         }else if (currency.equals(Currency.ZEC)){

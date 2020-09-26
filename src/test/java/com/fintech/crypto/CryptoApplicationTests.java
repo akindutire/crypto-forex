@@ -8,6 +8,7 @@ class CryptoApplicationTests {
 
 	@Test
 	void contextLoads() {
+		System.out.println(12343);
 	}
 
 }
