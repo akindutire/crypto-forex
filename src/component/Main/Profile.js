@@ -252,7 +252,7 @@ class Profile extends Component {
                                     <div className="card" style={ {backgroundColor: "#ffffff"} }>
                                        
                                         <h4 className="author px-3 pt-4">
-                                            <span className="float-left">{this.state.profile.name}</span>
+                                            <span className="float-left">{this.state.profile.name}({this.state.profile.username})</span>
                                             <span className="category-social text-info float-right">
                                             {
                                                 getAuthority() === "ADMIN" ?

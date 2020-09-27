@@ -119,7 +119,7 @@ class Content extends Component {
                                                         <span className="m-0">
                                                             ETHEREUM &nbsp; <i className="fab fa-ethereum"></i>
                                                         </span>
-                                                        <label style={ { color: "#fff", background: "#EB2323", position: "absolute", padding: "3px 6px", fontSize: "10px", fontWeight: "700", borderRadius: "3px", top:"-2px",right: "10%" } }>Coming soon</label>
+                                                        
                                                     </a>
                                                 </li>
                                                 <li className="nav-item col-12 col-md-3 col-lg-2 p-1 d-flex ">
@@ -136,7 +136,7 @@ class Content extends Component {
                                                         <span className="m-0">
                                                             DASH
                                                         </span>
-                                                        <label style={ { color: "#fff", background: "#EB2323", position: "absolute", padding: "3px 6px", fontSize: "10px", fontWeight: "700", borderRadius: "3px", top:"-2px",right: "10%" } }>Coming soon</label>
+                                                        
                                                     </a>
                                                 </li>
                                                 <li className="nav-item col-12 col-md-3 col-lg-2 p-1 d-flex ">
@@ -154,7 +154,7 @@ class Content extends Component {
                                                         <span className="m-0">
                                                             ZCASH
                                                         </span>
-                                                        <label style={ { color: "#fff", background: "#EB2323", position: "absolute", padding: "3px 6px", fontSize: "10px", fontWeight: "700", borderRadius: "3px", top:"-2px",right: "10%" } }>Coming soon</label>
+                                                        
                                                     </a>
                                                 </li>
                                             </ul>

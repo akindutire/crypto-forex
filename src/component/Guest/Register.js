@@ -52,7 +52,7 @@ class Register extends Component{
                 throw { status: 400, message: "Password not confirmed"};
             }
             
-            await this.props.register({name: this.state.name, email: this.state.email, password: this.state.password, confirmPassword:this.state.confirm_password, referralUserKey: referralKey});
+            await this.props.register({name: this.state.name, email: this.state.email, username: this.state.username, password: this.state.password, confirmPassword:this.state.confirm_password, referralUserKey: referralKey});
         
             const serverRes = this.props.registrationReceipt;
         
@@ -141,6 +141,8 @@ class Register extends Component{
                                         <form className="register-form mb-4">
 
                                             <input type="text" name="name" value={this.state.name} onChange={this.handleFormChange} className="form-control my-3" placeholder="Name" required />
+
+                                            <input type="text" name="username" value={this.state.username} onChange={this.handleFormChange} className="form-control my-3" placeholder="Username" required />
 
                                             <input type="email" name="email" value={this.state.email} onChange={this.handleFormChange} className="form-control my-3" placeholder="Email" required />
 

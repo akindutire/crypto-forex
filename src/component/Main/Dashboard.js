@@ -14,6 +14,7 @@ import { getContractsForAFold } from './../../redux/action/ContractAct';
 
 import $ from 'jquery';
 import axios from 'axios';
+import { act } from 'react-dom/test-utils';
 
 class Dashboard extends Component{
 
@@ -67,6 +68,7 @@ class Dashboard extends Component{
             meterVal:0,
             dailyHashPowerReturn:0,
             loadingDashboard: true,
+            profileIcon: null
         }
 
         this.selectACoin = this.selectACoin.bind(this);
@@ -124,10 +126,16 @@ class Dashboard extends Component{
             const p = serverRes.data.data;
             const cur = this.props.coinSelected.currency;
             const meter = (p.coinMinedPerDay[cur] - 0) / 10;
+            
+            if(p.coinMined[cur] > 0){
+                this.setState({profileIcon: <em><i className='fas fa-fan text-success fa-spin'></i></em>});
+            }else{
+                this.setState({profileIcon: null});
+            }
 
-            this.setState({profile: p, coinMined: p.coinMined[cur], coinMinedPerday: p.coinMinedPerDay[cur], last_purchase: p.lastPurchaseAndWithdrawal[cur].LP, last_withdrawal: p.lastPurchaseAndWithdrawal[cur].LW, meterVal: meter });
+            this.setState({profile: p, coinMinedPerday: p.coinMinedPerDay[cur], last_purchase: p.lastPurchaseAndWithdrawal[cur].LP, last_withdrawal: p.lastPurchaseAndWithdrawal[cur].LW, meterVal: meter, coinMined: p.coinMined[cur], });
 
-
+           
 
             await this.props.selectAWalletFold(this.props.coinSelected.currency, this.source.token);
             serverRes = this.props.walletFoldForACurrency;
@@ -229,15 +237,7 @@ class Dashboard extends Component{
                                 <div className="row my-1">
                                     <div className="col-12">
                                         <Link to="/profile"><span> <i className="fas fa-user text-success"></i></span> <b className="text-danger">{this.state.profile.email}</b> </Link>
-                                        <span className="float-right">
-                                        {
-                                                this.state.coinMined > 0 ?
-                                                    <i className="fas fa-fan fa-spin text-success"></i>
-                                                :
-                                                    <strong className="text-muted">Inactive</strong>
-                                            }
-                                            
-                                        </span>
+                                        <span className="float-right">{this.state.profileIcon}</span>
                                     </div>
                                 </div>
 
@@ -410,7 +410,7 @@ class Dashboard extends Component{
                                         <span className="float-right">
                                             {
                                                 this.state.coinMined > 0 ?
-                                                    <><i className="fas fa-vector-square text-success"></i> Active</>
+                                                    <strong className='text-success'>Active</strong>
                                                 :
                                                     <i></i> 
                                             }

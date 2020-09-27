@@ -30,6 +30,23 @@ class Footer extends Component {
                                     <a href="https://www.facebook.com/cryptoforex.2020" className="btn btn-link text-muted" target="_blank">
                                         <i className="fab fa-facebook"></i> Visit our facebook page
                                     </a> 
+                                    
+                                    <a href="https://forms.gle/Mu1jf9MpcSodTha1A" className="btn btn-link text-muted" target="_blank">
+                                         Facebook Bounty
+                                    </a> 
+
+
+                                    <a href="https://forms.gle/1vbiEQA8XqKQYJXz8" className="btn btn-link text-muted" target="_blank">
+                                         Twitter Bounty
+                                    </a> 
+
+                                    <a href="https://forms.gle/6wy2vSEUjtHSLD9f7" className="btn btn-link text-muted" target="_blank">
+                                         TrustPilot Bounty
+                                    </a> 
+
+                                    <a href="https://forms.gle/BwjhyAx5iX3UdUoR8" className="btn btn-link text-muted" target="_blank">
+                                         Youtube Bounty
+                                    </a> 
                                 </li>
                                
                             </ul>

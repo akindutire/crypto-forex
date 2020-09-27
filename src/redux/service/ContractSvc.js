@@ -29,7 +29,7 @@ export const unfulfilledPaymentExpectation = (currency, sesReqToken) => {
 }
 
 export const fetchContractsByCurrencyOfAFold = (currency, sesReqToken) => {
-    console.log(sesReqToken);
+
     return AuthorizedCryptoFxApi.get("/contract/fetch", {
         headers:{
             'Authorization': `Bearer ${getToken()}`
