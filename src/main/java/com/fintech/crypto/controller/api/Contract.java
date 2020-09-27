@@ -43,16 +43,20 @@ public class Contract {
         }
 
         Currency c = request.getCurrency();
-        String address;
+        String address, meta;
         if(c.equals(Currency.BTC) || c.equals(Currency.LTC) || c.equals(Currency.DOGE)) {
             BlockIoCryptoProviderCt cryptoProvider = (BlockIoCryptoProviderCt) cryptoProviderFactory.getProvider(c);
             address = cryptoProvider.getRandomAddress(request.getExpectedAmount());
+            meta = "";
         }else if (c.equals(Currency.ETH)){
             CoinPaymentCt cryptoProvider = (CoinPaymentCt) cryptoProviderFactory.getProvider(c);
-            address = cryptoProvider.getRandomAddress(request.getExpectedAmount());
+            String[] bundle = cryptoProvider.getRandomAddress(request.getExpectedAmount()).split("/", 2);
+            address = bundle[1];
+            meta = bundle[0];
         }else{
             CryptoProvider cryptoProvider = cryptoProviderFactory.getProvider(c);
             address = "";
+            meta = "";
         }
 
         res.put("status", HttpStatus.OK.value());
@@ -60,6 +64,7 @@ public class Contract {
         res.put("message", request.getExpectedAmount() + " hashpower is expected on " +address);
         res.put("data", address);
         res.put("address", address);
+        res.put("meta", meta);
 
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
@@ -76,7 +81,7 @@ public class Contract {
                 paymentState = cryptoProvider.probePayment(request.getPaymentAddress());
             }else if (c.equals(Currency.ETH)){
                 CoinPaymentCt cryptoProvider = (CoinPaymentCt) cryptoProviderFactory.getProvider(c);
-                paymentState = false;
+                paymentState = cryptoProvider.probePayment(request.getPaymentAddress());;
             }else{
                 CryptoProvider cryptoProvider = cryptoProviderFactory.getProvider(c);
                 paymentState = false;

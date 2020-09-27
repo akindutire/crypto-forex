@@ -65,7 +65,7 @@ public class Ethereum implements CoinPaymentCt {
                         .amount(expectedAmount)
                         .currencyPrice(Currency.ETH.toString())
                         .currencyTransfer(Currency.ETH.toString())
-                        .callbackUrl("")
+                        .callbackUrl(prop.APP_DOMAIN_ADDRESS+"/ipn/coinpayment?address=001"+"email"+user.getEmail())
                         .custom("ETH Hashpower purchase")
                         .buyerEmail(user.getEmail())
                         .buyerName(user.getName())
@@ -80,9 +80,11 @@ public class Ethereum implements CoinPaymentCt {
                     cryptoProviderAddress.setExpectedAmount(expectedAmount);
                     cryptoProviderAddress.setCurrency(Currency.ETH);
                     cryptoProviderAddress.setVendor(CryptoAddressVendor.COINPAYMENT);
+                    cryptoProviderAddress.setMeta(txResponse.getResult().getAddress());
                     cryptoProviderAddressDao.save(cryptoProviderAddress);
+
                     System.out.println("Address=========" + addressResponse.getResult().getAddress()+"======Tnx id====="+cryptoProviderAddress.getAddress());
-                    return addressResponse.getResult().getAddress();
+                    return txResponse.getResult().getAddress() + "/" + txResponse.getResult().getTransactionId();
                 } else {
                     throw new IllegalStateException("Unable to setup payment environment, please retry");
                 }
@@ -90,7 +92,7 @@ public class Ethereum implements CoinPaymentCt {
                 throw new IllegalStateException("Unable to fetch payment address, No payment setup");
             }
         } catch (NullPointerException | IOException e) {
-            throw new RuntimeException("Connection not successful, please try again. " + e.getMessage());
+            throw new RuntimeException("Error: " + e.getMessage());
         }
     }
     @Override
@@ -113,10 +115,6 @@ public class Ethereum implements CoinPaymentCt {
                 contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
                 return true;
             }else{
-//                providerAddress.setStatus("PARTIALLY_FULFILLED");
-//                providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() - balance);
-//                providerAddress.setReservedAmount(providerAddress.getReservedAmount() + balance);
-//                cryptoProviderAddressDao.save(providerAddress);
                 return false;
             }
         }else{
@@ -125,18 +123,17 @@ public class Ethereum implements CoinPaymentCt {
     }
 
     @Override
-    public Double getBalance(String address) {
+    public Double getBalance(String paymentTnxId) {
 
         try {
             double balanceFound = 0.00;
-            ResponseWrapper<TransactionDetailsResponse> tnxResponse = coinPayments.sendRequest(new CoinPaymentsGetTransactionInfoRequest(Currency.ETH.toString()));
+            ResponseWrapper<TransactionDetailsResponse> tnxResponse = coinPayments.sendRequest(new CoinPaymentsGetTransactionInfoRequest(paymentTnxId));
             if (tnxResponse.getError().equals("ok")) {
+                System.out.println(tnxResponse.getResult().toString());
                 balanceFound = tnxResponse.getResult().getReceivedf();
             }else{
                 throw new IllegalStateException("Unable to retrieve balance, please try again");
             }
-
-
 //            totalBalanceFound = resObject.getString("available_balance");
 //            for (int i=0; i < balances.length(); i++){
 //
@@ -150,7 +147,7 @@ public class Ethereum implements CoinPaymentCt {
             return balanceFound;
 
         } catch (IOException e) {
-            throw new RuntimeException("Connection not successful, please try again. " + e.getMessage());
+            throw new RuntimeException("Error: " + e.getMessage());
         }
     }
 }

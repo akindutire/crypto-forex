@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface CryptoProviderAddressDao extends JpaRepository<CryptoProviderAddress, Long> {
     Optional<CryptoProviderAddress> findByAddress(String Address);
+    Optional<CryptoProviderAddress> findByMeta(String Meta);
     Optional<CryptoProviderAddress> findByNonce(String nonce);
     List<CryptoProviderAddress> findByStatus(String status);
 

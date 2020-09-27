@@ -44,4 +44,7 @@ public class CryptoProviderAddress extends AbstractEntity{
 
     @Column(name = "nonce")
     private String nonce;
+
+    @Column(name = "meta")
+    private String meta;
 }

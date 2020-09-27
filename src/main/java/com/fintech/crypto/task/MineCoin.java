@@ -52,7 +52,8 @@ public class MineCoin implements MiningCt {
                    System.out.println(latest.getCreatedAt() +" logged");
 //                   System.out.println(Math.abs(Duration.between(LocalDateTime.now(), latest.getCreatedAt()).toDays()) + "hours");
                    if( Math.abs(Duration.between(LocalDateTime.now(), latest.getCreatedAt()).toHours()) < 24 ){
-                      continue;
+                      //skip
+                       continue;
                    }
                }
 
@@ -66,7 +67,11 @@ public class MineCoin implements MiningCt {
                 CoinRate rate = cr.stream().filter( (r) ->  r.getMinHashPower() <= c.getHashPowerPurchased() && (c.getHashPowerPurchased() <= r.getMaxHashPower() || r.getMaxHashPower() == 0)  ).findFirst().orElse(null);
 
                 assert rate != null;
-                double amountMined = (rate.getMineRate() / 100) * c.getAmountInvested();
+                long daysBetween = Math.abs(Duration.between(LocalDateTime.now(), latest.getCreatedAt()).toDays());
+                if (daysBetween < 1){
+                    daysBetween = 1;
+                }
+                double amountMined = daysBetween * ((rate.getMineRate() / 100) * c.getAmountInvested());
                 DecimalFormat decimalFormat = new DecimalFormat("#.########");
                 decimalFormat.setRoundingMode(RoundingMode.HALF_DOWN);
                 c.setInterestAmountAccumulated( c.getInterestAmountAccumulated() + amountMined);
