@@ -65,9 +65,11 @@ public class IUserSvc implements UserCt {
 
             Wallet w = walletSvc.create();
             u.setName(req.getName());
+            u.setUsername(req.getUsername());
             u.setEmail(req.getEmail());
             u.setEnabled(true);
             u.setRole(req.getRole());
+            u.setReferralKey(req.getUsername());
             u.setWallet(w);
             w.setUser(u);
 

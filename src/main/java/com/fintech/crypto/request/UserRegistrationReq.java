@@ -11,6 +11,9 @@ import javax.validation.constraints.NotBlank;
 public class UserRegistrationReq {
 
     @NotBlank
+    private String username;
+
+    @NotBlank
     @Email
     private String email;
 

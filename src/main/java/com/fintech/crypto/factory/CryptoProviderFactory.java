@@ -38,9 +38,9 @@ public class CryptoProviderFactory {
         }else if (currency.equals(Currency.DOGE)){
             return dogecoin;
         }else if (currency.equals(Currency.ZEC)){
-            throw new IllegalStateException("Address not available");
+            return zcash;
         }else if(currency.equals(Currency.DASH)){
-            throw new IllegalStateException("Address not available");
+            return dash;
         }else{
             throw new IllegalStateException("Currency not supported");
         }
