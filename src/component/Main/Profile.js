@@ -50,10 +50,10 @@ class Profile extends Component {
         this.deactivate2FA = this.deactivate2FA.bind(this);
     }
 
-    handlePurchase = async (expectedHashPower, address) => {
+    handlePurchase = async (expectedHashPower, address, meta) => {
         try{
 
-            await this.props.setHashPowerToPurchase({h: expectedHashPower, ad: address});
+            await this.props.setHashPowerToPurchase({h: expectedHashPower, ad: address, t: meta});
             this.props.history.push(`/pay`);
 
         }catch(e){
@@ -136,22 +136,6 @@ class Profile extends Component {
 
     }
 
-    async componentDidMount() {
-
-        $('#bodyClick').trigger('click');
-        window.scrollTo(0, 0);
-
-        if(typeof this.props.coinSelected.ref === "undefined"){
-            this.props.history.push('/start-mining');
-            return;
-        }else{
-            this.setState({cur_coin: this.props.coinSelected})
-        }
-
-        this.loadProfile();
-        
-    }
-    
     activate2FA = async () => {
         try{
 
@@ -208,11 +192,26 @@ class Profile extends Component {
         }
     }
 
+    async componentDidMount() {
+
+        $('#bodyClick').trigger('click');
+        window.scrollTo(0, 0);
+
+        if(typeof this.props.coinSelected.ref === "undefined"){
+            this.props.history.push('/start-mining');
+            return;
+        }else{
+            this.setState({cur_coin: this.props.coinSelected})
+        }
+
+        this.loadProfile();
+        
+    }
+    
+
     componentWillUnmount(){
         this.source.cancel();
     }
-
-    
 
     render() {
         let refLink = 'https://crypto-forex.me/'
@@ -383,7 +382,7 @@ class Profile extends Component {
                                                 
                                                 return(
                                                     <div key={i} className="col-sm-12 col-md-6">
-                                                        <div className="card" onClick={ () => { this.handlePurchase(c.expectedAmount * this.state.cur_coin.exchangeRateToHashPower, c.address) } } style={ {backgroundColor: "#e8eaf6 "} }>
+                                                        <div className="card" onClick={ () => { this.handlePurchase(c.expectedAmount * this.state.cur_coin.exchangeRateToHashPower, c.address, c.meta) } } style={ {backgroundColor: "#e8eaf6 "} }>
                                                             <div className="card-body" >
                                                                 <h6 className="author float-left">
                                                                     <i className="fa fa-arrow-down text-muted"></i> {c.expectedAmount * this.state.cur_coin.exchangeRateToHashPower}{this.state.cur_coin.hashPowerUnit}

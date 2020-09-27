@@ -166,7 +166,7 @@ class Dashboard extends Component{
         if(this.state.purchase_crypto_amount < this.MinimumDeposits[this.props.coinSelected.currency]){
             throw {status: 400, message: "Minimum amount deposit has been reached"};
         }
-        this.props.setHashPowerToPurchase({h: this.state.purchase_hash_power, ad: undefined});
+        this.props.setHashPowerToPurchase({h: this.state.purchase_hash_power, ad: undefined, t:undefined});
         this.props.history.push(`/pay`);
     }
 
@@ -234,7 +234,7 @@ class Dashboard extends Component{
                                                 this.state.coinMined > 0 ?
                                                     <i className="fas fa-fan fa-spin text-success"></i>
                                                 :
-                                                    <em className="text-muted">Inactive</em>
+                                                    <strong className="text-muted">Inactive</strong>
                                             }
                                             
                                         </span>

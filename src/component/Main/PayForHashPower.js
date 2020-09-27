@@ -23,6 +23,8 @@ class PayForHashPower extends Component{
             amount: 0,
             paymentState : false,
             address: "",
+            meta_info_as_tx_info: "",
+            addressToDisplay: "",
             loadingPaymentSetUp: true,
         }
 
@@ -42,19 +44,26 @@ class PayForHashPower extends Component{
 
         const hashPwr = this.props.hashPowerToPurchase.h;
         const addr = this.props.hashPowerToPurchase.ad; 
+        const metaInfo = this.props.hashPowerToPurchase.t; 
+
         const amount = (hashPwr / this.props.coinSelected.exchangeRateToHashPower).toFixed(8);
         if( amount > 0){
             this.setState({amount});
             if(addr === undefined){
                 this.setUpWalletTagToReceivePayment(amount);
             }else{
-                this.setState({ address: addr, loadingPaymentSetUp: false});
+                //backednd expect tx_id for ETH, ZEC, DASH
+                const txBasedCoin = [ "ETH", "DASH", "ZEC" ];
+                if(txBasedCoin.includes(this.props.coinSelected.currency)){
+                    this.setState({ address: addr, addressToDisplay: metaInfo, loadingPaymentSetUp: false});
+                }else{
+                    this.setState({ address: addr, addressToDisplay: metaInfo, loadingPaymentSetUp: false});
+                } 
             }
         }else{
             this.props.history.push('/dashboard');
             return;
         }
- 
     }
 
     setUpWalletTagToReceivePayment = async (expectedAmount) => {
@@ -69,8 +78,14 @@ class PayForHashPower extends Component{
                 throw { status: serverRes.status, message: serverRes.data  }
             }
 
-            this.setState({ address: serverRes.data.address.trim()});
-        
+            //backednd expect tx_id for ETH, ZEC, DASH
+            const txBasedCoin = [ "ETH", "DASH", "ZEC" ];
+            if(txBasedCoin.includes(this.props.coinSelected.currency)){
+                this.setState({ address: serverRes.data.address.trim(), addressToDisplay: serverRes.data.meta.trim() });
+            }else{
+                this.setState({ address: serverRes.data.address.trim(), addressToDisplay: serverRes.data.address.trim() });
+            }
+               
         }catch(e){
             if(typeof e.message == "object" || e.status === 401 || e.status === 403){
                 if(e.status === 401 || e.status === 403){
@@ -91,6 +106,7 @@ class PayForHashPower extends Component{
         try{
             //fetch probe server from server
             this.props.engageApp(true);
+         
             await this.props.probeUserPayment(this.props.coinSelected.currency, this.state.address);
             const serverRes = this.props.paymentReceipt;
             // console.log(serverRes);
@@ -156,15 +172,15 @@ class PayForHashPower extends Component{
                                 
                                 <div className="col-12 text-center">
                                     {
-                                        typeof this.state.address != null || typeof this.state.address != undefined || this.state.address.length > 0 ?
+                                        typeof this.state.addressToDisplay != null || typeof this.state.addressToDisplay != undefined || this.state.addressToDisplay.length > 0 ?
                                             <>                                          
-                                                <QRCode value={this.state.address} /><br /><br />
-                                                <p style={{wordWrap: "break-word"}}>{this.state.address}</p>
+                                                <QRCode value={this.state.addressToDisplay} /><br /><br />
+                                                <p style={{wordWrap: "break-word"}}>{this.state.addressToDisplay}</p>
                                             </>
                                         :
                                             <p className="d-block w-100 text-center">
                                                 <img src="/svg/Loader.svg" width="20%"/><br />
-                                                <b>  Waiting on payment address </b>
+                                                <b>  No payment address generated yet </b>
                                             </p>
                                     }
                                 </div>

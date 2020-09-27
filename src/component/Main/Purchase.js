@@ -45,7 +45,7 @@ class Purchase extends Component {
                 throw {status: 400, message: "Minimum amount deposit has been reached"};
             }
 
-            this.props.setHashPowerToPurchase({h: this.state.purchase_hash_power, ad: undefined});
+            this.props.setHashPowerToPurchase({h: this.state.purchase_hash_power, ad: undefined, t:undefined});
             this.props.history.push(`/pay`);
 
         }catch(e){
