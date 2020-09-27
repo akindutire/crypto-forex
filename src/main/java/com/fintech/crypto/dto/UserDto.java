@@ -13,6 +13,7 @@ import java.util.Map;
 public class UserDto {
     private String name;
     private String email;
+    private String username;
     private Boolean isUsing2FA;
     private String secretFor2FA;
     private String referralKey;
