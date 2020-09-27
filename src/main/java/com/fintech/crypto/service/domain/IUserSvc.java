@@ -47,14 +47,18 @@ public class IUserSvc implements UserCt {
     @Override
     public User createUser(UserRegistrationReq req) {
 
+        if (userDao.findByUsername(req.getUsername()).isPresent()) {
+            throw new DuplicateKeyException("Username already exist");
+        }
+
         if (userDao.findByEmail(req.getEmail()).isPresent()){
-            throw new DuplicateKeyException("Account already existed");
+            throw new DuplicateKeyException("Account already exist");
         }else{
             User u = new User();
             String rKey = req.getReferralUserKey();
 
             User refUser = null;
-            if (!rKey.equals("00") || rKey.length() > 8 ){
+            if (!rKey.equals("00") ){
                 refUser = userDao.findEmailByReferralKey(rKey).orElse(null);
                 if (refUser != null){
                     u.setReferredByUserEmail(refUser.getEmail());

@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface UserDao extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
+    Optional<User> findByUsername(String username);
 
     @Query("select u.role from User u where u.email=:E")
     String findByEmailQ(@Param("E") String email);
