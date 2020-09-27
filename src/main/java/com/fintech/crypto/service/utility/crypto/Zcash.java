@@ -44,7 +44,7 @@ public class Zcash implements CoinPaymentCt {
     @Override
     public String getRandomAddress(double expectedAmount) {
         try {
-            ResponseWrapper<AddressResponse> addressResponse = coinPayments.sendRequest(new CoinPaymentsDepositRequest(Currency.ETH.toString()));
+            ResponseWrapper<AddressResponse> addressResponse = coinPayments.sendRequest(new CoinPaymentsDepositRequest(Currency.ZEC.toString()));
 
             if (addressResponse.getError().equals("ok")) {
                 User user = userSvc.getCurrentUser();

@@ -45,8 +45,7 @@ public class Dash implements CoinPaymentCt{
     @Override
     public String getRandomAddress(double expectedAmount) {
        try {
-            ResponseWrapper<AddressResponse> addressResponse = coinPayments.sendRequest(new CoinPaymentsDepositRequest(Currency.ETH.toString()));
-
+            ResponseWrapper<AddressResponse> addressResponse = coinPayments.sendRequest(new CoinPaymentsDepositRequest(Currency.DASH.toString()));
             if (addressResponse.getError().equals("ok")) {
                 User user = userSvc.getCurrentUser();
                 ResponseWrapper<CreateTransactionResponse> txResponse = coinPayments.sendRequest(CoinPaymentsCreateTransactionRequest.builder()
