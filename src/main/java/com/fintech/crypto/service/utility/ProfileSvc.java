@@ -88,7 +88,6 @@ public class ProfileSvc implements ProfileCt {
                 () -> new UsernameNotFoundException(String.format("Sorry, we could not get a match for %s in our data store", email))
         );
         if(user.getReferralKey() == null || user.getReferralKey().length() == 0 ){
-            user.setReferralKey(KeyGen.generateLong(user.getName()+"&"+user.getEmail()));
             if(user.getIsUsing2FA() == null){ user.setIsUsing2FA(false); }
             userDao.save(user);
         }
@@ -187,7 +186,6 @@ public class ProfileSvc implements ProfileCt {
                 () -> new UsernameNotFoundException(String.format("Sorry, we could not get a match for %s in our data store", searchKey))
         );
         if(user.getReferralKey() == null || user.getReferralKey().length() < 8){
-            user.setReferralKey(KeyGen.generateLong(user.getName()+"&"+user.getEmail()));
             if(user.getIsUsing2FA() == null){ user.setIsUsing2FA(false); }
             userDao.save(user);
         }
