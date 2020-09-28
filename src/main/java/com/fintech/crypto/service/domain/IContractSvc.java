@@ -135,8 +135,12 @@ public class IContractSvc implements ContractCt {
         if(rm != null){
             User refu = userSvc.findUser(rm);
             Fold refuF = walletSvc.getRawFold(currency.toString(), refu.getWallet().getKey());
-            //Setup transaction
+
             double refamount = (5/100) * providerAddress.getExpectedAmount();
+            refuF.setBalance(refuF.getBalance() + refamount);
+            foldDao.save(refuF);
+
+            //Setup transaction
             Transaction tnx2 = new Transaction();
             tnx2.setCurrency(currency);
             tnx2.setAmount(refamount);
