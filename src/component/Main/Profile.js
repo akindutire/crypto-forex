@@ -252,7 +252,7 @@ class Profile extends Component {
                                     <div className="card" style={ {backgroundColor: "#ffffff"} }>
                                        
                                         <h4 className="author px-3 pt-4">
-                                            <span className="float-left">{this.state.profile.name}({this.state.profile.username})</span>
+                                            <span className="float-left">{this.state.profile.name}</span>
                                             <span className="category-social text-info float-right">
                                             {
                                                 getAuthority() === "ADMIN" ?
@@ -269,7 +269,8 @@ class Profile extends Component {
                                         <div className="card-body">
                                           
                                             <div className="card-description" style={ {color: "#000000"} }>
-                                               
+                                                
+                                                <p className="my-2"> <span> <b>Username:</b></span> <span>{this.state.profile.username}</span> </p>
                                                 <p className="my-2"> <span> <b>E-mail:</b></span> <span>{this.state.profile.email}</span> </p>
                                                 <p className="my-2"> <span>  <b>Registered on</b></span> <span>{this.state.profile.createdAt}</span> </p>
 
@@ -278,7 +279,8 @@ class Profile extends Component {
                                                 <p className="my-2"> <span>  <b>Coins mined:</b></span> <span><b>{this.state.coinMined}</b></span> <span className="text-success">{this.state.cur_coin.currency}</span> </p>
                                                 <p className="my-2 mb-1"> <span>  <b>Withdrawal address:</b></span> <span><b>{this.state.profile.withdrawalAddress}</b></span> </p>
 
-                                                <p className="my-2 text-truncate"> 
+                                                <p className="my-2 text-truncate">
+                                                    <b>Referral link:</b><br/>
                                                     <CopyToClipboard text={refLink}
                                                     onCopy={() => toastr.info('Referral link copied')}>
                                                         <small> 
