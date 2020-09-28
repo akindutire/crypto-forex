@@ -214,7 +214,7 @@ class Profile extends Component {
     }
 
     render() {
-        let refLink = 'https://crypto-forex.me/register/'
+        let refLink = 'http://crypto-forex.me/register/'
         refLink+=this.state.profile.referralKey;
 
         return (
