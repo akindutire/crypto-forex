@@ -136,7 +136,7 @@ public class IContractSvc implements ContractCt {
             User refu = userSvc.findUser(rm);
             Fold refuF = walletSvc.getRawFold(currency.toString(), refu.getWallet().getKey());
 
-            double refamount = (5/100) * providerAddress.getExpectedAmount();
+            double refamount = (5.0/100.0) * providerAddress.getExpectedAmount();
             refuF.setBalance(refuF.getBalance() + refamount);
             foldDao.save(refuF);
 
@@ -145,7 +145,7 @@ public class IContractSvc implements ContractCt {
             tnx2.setCurrency(currency);
             tnx2.setAmount(refamount);
             tnx2.setFromType(FundSource.HOST_PROVIDER);
-            tnx2.setFrom("001-cryto-forex");
+            tnx2.setFrom("001-cryto-forex/"+fold.getRef());
             tnx2.setToType(FundSource.WALLET);
             tnx2.setTo(refuF.getRef());
             tnx2.setMode(TransactionMode.INTER_FUND);
