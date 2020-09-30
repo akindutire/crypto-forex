@@ -57,7 +57,7 @@ class PayForHashPower extends Component{
                 if(txBasedCoin.includes(this.props.coinSelected.currency)){
                     this.setState({ address: addr, addressToDisplay: metaInfo, loadingPaymentSetUp: false});
                 }else{
-                    this.setState({ address: addr, addressToDisplay: metaInfo, loadingPaymentSetUp: false});
+                    this.setState({ address: addr, addressToDisplay: addr, loadingPaymentSetUp: false});
                 } 
             }
         }else{
