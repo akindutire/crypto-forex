@@ -127,7 +127,7 @@ class Dashboard extends Component{
             const cur = this.props.coinSelected.currency;
             const meter = (p.coinMinedPerDay[cur] - 0) / 10;
             
-            if(p.coinMined[cur] > 0){
+            if(p.coinMinedPerDay[cur] > 0){
                 this.setState({profileIcon: <em><i className='fas fa-fan text-success fa-spin'></i></em>});
             }else{
                 this.setState({profileIcon: null});

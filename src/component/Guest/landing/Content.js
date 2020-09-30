@@ -919,8 +919,8 @@ class Content extends Component {
                                         </p>
                                     </div>
                                     <div className="card-footer text-center">
-                                        <a href="https://www.facebook.com/fredscott868" target="_blank" className="btn btn-link btn-just-icon btn-twitter"><i className="fab fa-twitter"></i></a>
-                                        <a href="https://twitter.com/FredSco56243010" target="_blank" className="btn btn-link btn-just-icon btn-dribbble"><i className="fab fa-twitter"></i></a>
+                                        <a href="https://www.facebook.com/fredscott868" target="_blank" className="btn btn-link btn-just-icon btn-twitter"><i className="fab fa-facebook"></i></a>
+                                        <a href="https://mobile.twitter.com/fred_scott1" target="_blank" className="btn btn-link btn-just-icon btn-twitter"><i className="fab fa-twitter"></i></a>
                                         <a href="https://www.instagram.com/fredscott868" target="_blank" className="btn btn-link btn-just-icon btn-linkedin"><i className="fab fa-instagram"></i></a>
                                     </div>
                                 </div>
