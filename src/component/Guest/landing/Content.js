@@ -983,7 +983,7 @@ class Content extends Component {
                                     <div className="row">
                                         <div className="col-sm-12">
                                             <button type="button" disabled={this.props.appEngaged} onClick={this.handleSendMessage} className="btn btn-danger btn-lg btn-fill btn-block">
-                                                { this.props.appEngaged ? 'Sending' : 'Send Message' }
+                                                { this.props.appEngaged ? 'Sending' : 'Leave a Message' }
                                             </button>
                                         </div>
                                     </div>
