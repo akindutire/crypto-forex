@@ -105,22 +105,31 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
 
         if(balance > 0){
 
-            if (balance >= providerAddress.getExpectedAmount()){
+            double ra = providerAddress.getReservedAmount();
+            providerAddress.setExpectedAmount(balance + ra);
+            providerAddress.setReservedAmount(0.00);
+            providerAddress.setStatus("FULFILLED");
+            cryptoProviderAddressDao.save(providerAddress);
 
-                double ra = providerAddress.getReservedAmount();
-                providerAddress.setExpectedAmount(balance + ra);
-                providerAddress.setReservedAmount(0.00);
-                providerAddress.setStatus("FULFILLED");
-                cryptoProviderAddressDao.save(providerAddress);
+            //Create contract
+            contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
 
-                //Create contract
-                contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
-            }else{
-                providerAddress.setStatus("PARTIALLY_FULFILLED");
-                providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() - balance);
-                providerAddress.setReservedAmount(providerAddress.getReservedAmount() + balance);
-                cryptoProviderAddressDao.save(providerAddress);
-            }
+//            if (balance >= providerAddress.getExpectedAmount()){
+//
+//                double ra = providerAddress.getReservedAmount();
+//                providerAddress.setExpectedAmount(balance + ra);
+//                providerAddress.setReservedAmount(0.00);
+//                providerAddress.setStatus("FULFILLED");
+//                cryptoProviderAddressDao.save(providerAddress);
+//
+//                //Create contract
+//                contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
+//            }else{
+//                providerAddress.setStatus("PARTIALLY_FULFILLED");
+//                providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() - balance);
+//                providerAddress.setReservedAmount(providerAddress.getReservedAmount() + balance);
+//                cryptoProviderAddressDao.save(providerAddress);
+//            }
             return true;
         }else{
             return false;
@@ -162,20 +171,10 @@ public class Bitcoin implements BlockIoCryptoProviderCt {
 
             }
 
-//            totalBalanceFound = resObject.getString("available_balance");
-//            for (int i=0; i < balances.length(); i++){
-//
-//                JSONObject balance = balances.getJSONObject(i);
-//                if ( balance.getString("address").equals(address) ){
-//                    balanceFound = balance.getString("available_balance");
-//                    break;
-//                }
-//            }
-
             return Double.parseDouble(balanceFound);
 
         } catch (UnirestException e) {
-            throw new RuntimeException("Connection not successful, wallet not created, please try again. " + e.getMessage());
+            throw new RuntimeException("Connection not successful, please try again. " + e.getMessage());
         }
     }
 

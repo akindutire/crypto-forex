@@ -55,7 +55,7 @@ public class NotificationSvc {
         // Send welcome email
         String loginLink = prop.APP_DOMAIN_ADDRESS+"/login";
         String aboutLink = prop.APP_DOMAIN_ADDRESS+"/about";
-        String bountyLink = prop.APP_DOMAIN_ADDRESS+"/bounty-link";
+        String bountyLink = "https://forms.gle/Mu1jf9MpcSodTha1A";
         String telegramLink = "https://t.me/cryptoforex_2020";
 
         mailer.send(
@@ -171,8 +171,8 @@ public class NotificationSvc {
 
         }else if(tnx.getFromType().equals(FundSource.CRYPTO_PROVIDER)){
             Fold to = foldDao.findByRef(tnx.getTo());
-            Wallet f = walletDao.findByKey(to.getWallet());
-            User ut = f.getUser();
+            Wallet t = walletDao.findByKey(to.getWallet());
+            User ut = t.getUser();
 
             String email = ut.getEmail();
 

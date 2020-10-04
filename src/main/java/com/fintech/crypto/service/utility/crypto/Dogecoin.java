@@ -103,23 +103,30 @@ public class Dogecoin implements BlockIoCryptoProviderCt {
         CryptoProviderAddress providerAddress = cryptoProviderAddressDao.findByAddress(paymentAddress).orElseThrow( () ->  new RuntimeException("Couldn't find payment expectation through "+paymentAddress)  );
         double balance = this.getBalance(paymentAddress);
         if(balance > 0){
+            double ra = providerAddress.getReservedAmount();
+            providerAddress.setExpectedAmount(balance + ra);
+            providerAddress.setReservedAmount(0.00);
+            providerAddress.setStatus("FULFILLED");
+            cryptoProviderAddressDao.save(providerAddress);
 
-            if (balance >= providerAddress.getExpectedAmount()){
-
-                double ra = providerAddress.getReservedAmount();
-                providerAddress.setExpectedAmount(balance + ra);
-                providerAddress.setReservedAmount(0.00);
-                providerAddress.setStatus("FULFILLED");
-                cryptoProviderAddressDao.save(providerAddress);
-
-                //Create contract
-                contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
-            }else{
-                providerAddress.setStatus("PARTIALLY_FULFILLED");
-                providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() - balance);
-                providerAddress.setReservedAmount(providerAddress.getReservedAmount() + balance);
-                cryptoProviderAddressDao.save(providerAddress);
-            }
+            //Create contract
+            contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
+//            if (balance >= providerAddress.getExpectedAmount()){
+//
+//                double ra = providerAddress.getReservedAmount();
+//                providerAddress.setExpectedAmount(balance + ra);
+//                providerAddress.setReservedAmount(0.00);
+//                providerAddress.setStatus("FULFILLED");
+//                cryptoProviderAddressDao.save(providerAddress);
+//
+//                //Create contract
+//                contractSvc.create(providerAddress.getCurrency(), providerAddress.getAddress());
+//            }else{
+//                providerAddress.setStatus("PARTIALLY_FULFILLED");
+//                providerAddress.setExpectedAmount(providerAddress.getExpectedAmount() - balance);
+//                providerAddress.setReservedAmount(providerAddress.getReservedAmount() + balance);
+//                cryptoProviderAddressDao.save(providerAddress);
+//            }
             return true;
         }else{
             return false;
