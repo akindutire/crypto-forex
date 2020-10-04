@@ -157,7 +157,8 @@ public class Litecoin implements BlockIoCryptoProviderCt {
 
             if(balances.length() > 0 && c.getNonce() == null){
                 JSONObject balance = balances.getJSONObject(balances.length() - 1);
-                balanceFound = balance.getString("available_balance");
+                balanceFound = Double.parseDouble(balance.getString("available_balance")) > 0 ? balance.getString("available_balance") : balance.getString("pending_received_balance");
+
                 if(Double.parseDouble(balanceFound) > 0){
                     c = cryptoProviderAddressDao.findByAddress(address).get();
                     c.setNonce(nonce);
